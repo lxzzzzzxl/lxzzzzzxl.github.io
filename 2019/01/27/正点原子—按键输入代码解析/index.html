@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言相信很多人学习STM32看的教程资料什么的，不是正点原子就是野火，这两家的资料都是比较有名的，我用的就是正点原子的，这篇博客我来讲一下我当初学习按键输入例程时的疑惑，我到论坛上看了，大部分初学者跟我有同样的问题，究尽是什么问题呢？我们先上代码：">
+<meta name="keywords" content="STM32">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正点原子—按键输入代码解析">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/01/27/正点原子—按键输入代码解析/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="前言相信很多人学习STM32看的教程资料什么的，不是正点原子就是野火，这两家的资料都是比较有名的，我用的就是正点原子的，这篇博客我来讲一下我当初学习按键输入例程时的疑惑，我到论坛上看了，大部分初学者跟我有同样的问题，究尽是什么问题呢？我们先上代码：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-28T10:22:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正点原子—按键输入代码解析">
+<meta name="twitter:description" content="前言相信很多人学习STM32看的教程资料什么的，不是正点原子就是野火，这两家的资料都是比较有名的，我用的就是正点原子的，这篇博客我来讲一下我当初学习按键输入例程时的疑惑，我到论坛上看了，大部分初学者跟我有同样的问题，究尽是什么问题呢？我们先上代码：">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/01/27/正点原子—按键输入代码解析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>正点原子—按键输入代码解析 | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/01/27/正点原子—按键输入代码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">正点原子—按键输入代码解析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-27 12:12:19" itemprop="dateCreated datePublished" datetime="2019-01-27T12:12:19+08:00">2019-01-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-28 18:22:38" itemprop="dateModified" datetime="2019-01-28T18:22:38+08:00">2019-01-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/STM32/" itemprop="url" rel="index"><span itemprop="name">STM32</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/STM32/正点原子/" itemprop="url" rel="index"><span itemprop="name">正点原子</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/27/正点原子—按键输入代码解析/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/27/正点原子—按键输入代码解析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/27/正点原子—按键输入代码解析/" class="leancloud_visitors" data-flag-title="正点原子—按键输入代码解析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相信很多人学习STM32看的教程资料什么的，不是正点原子就是野火，这两家的资料都是比较有名的，我用的就是正点原子的，这篇博客我来讲一下我当初学习按键输入例程时的疑惑，我到论坛上看了，大部分初学者跟我有同样的问题，究尽是什么问题呢？我们先上代码：  </p>
+<a id="more"></a>  
+<h1 id="代码讲解"><a href="#代码讲解" class="headerlink" title="代码讲解"></a>代码讲解</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">u8 <span class="title">KEY_Scan</span><span class="params">(u8 mode)</span></span></span><br><span class="line"><span class="function"></span>&#123;	 </span><br><span class="line">	<span class="keyword">static</span> u8 key_up=<span class="number">1</span>;<span class="comment">//按键按松开标志</span></span><br><span class="line">	<span class="keyword">if</span>(mode)key_up=<span class="number">1</span>;  <span class="comment">//支持连按		  </span></span><br><span class="line">	<span class="keyword">if</span>(key_up&amp;&amp;(KEY1==<span class="number">0</span>||KEY2==<span class="number">0</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		delay_ms(<span class="number">10</span>);<span class="comment">//去抖动 </span></span><br><span class="line">		key_up=<span class="number">0</span>;</span><br><span class="line">	    <span class="keyword">if</span>(KEY1==<span class="number">0</span>)<span class="keyword">return</span> KEY_1;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(KEY2==<span class="number">0</span>)<span class="keyword">return</span> KEY_2;</span><br><span class="line">		</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(KEY1==<span class="number">1</span>&amp;&amp;KEY2==<span class="number">1</span>)key_up=<span class="number">1</span>; 	    </span><br><span class="line"> 	<span class="keyword">return</span> <span class="number">0</span>;<span class="comment">// 无按键按下</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题就出在这个KEY_Scan()函数上（上面贴的代码我修改过，原版是有4个按键的，我改成2个，但实质上是一样的，这样方便大家理解），前面GPIO初始化部分，相信看过跑马灯例程过来的都没什么问题，我们主要看看KEY_Scan()这个函数，这个函数是带参数mode的，且有返回值，当初我跟大部分网友的疑惑在于为啥mode为1就支持连续按，为0就不支持呢，原理是啥？代码读一遍下来感觉为0为1没差啊。<br>为什么会有这样的疑惑，归结起来还是C语言基础太差，还有一个很重要的原因就是，大家阅读代码就只是这样读一遍下来，然而这里你要读上两遍才能看出问题所在。下面我们一点一点来讲……<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">static</span> u8 key_up=<span class="number">1</span>;<span class="comment">//按键按松开标志</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 这句话咋一看没什么了不起，不就是定义key_up的值为1吗？是这样没错，但是大家可能忽视了前面</span></span><br><span class="line"><span class="comment">有个static，或者知道有static却不知道它的含义，这就是为什么我说C语言基础差的原因，static用</span></span><br><span class="line"><span class="comment">在这里相当于定义了一个static局部变量，下面是重点：static局部变量只被初始化一次，下一次依据</span></span><br><span class="line"><span class="comment">上一次结果值。意思也就是说，这句话只跑一次！！！ */</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span>(mode)</span><br><span class="line">	key_up=<span class="number">1</span>;  <span class="comment">//是否支持连按 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 这里我把原代码这样写，可能大家见这样形式的比较熟悉，很明显是个if判断语句，如果是真，执行</span></span><br><span class="line"><span class="comment">key_up=1；如果不为真，跳过，执行下一行；那么真不真，相信大家应该都明白，1真0不真咯，如果不</span></span><br><span class="line"><span class="comment">懂，还是先去翻翻C语言吧。 */</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span>(key_up&amp;&amp;(KEY1==<span class="number">0</span>||KEY2==<span class="number">0</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		delay_ms(<span class="number">10</span>);<span class="comment">//去抖动 </span></span><br><span class="line">		key_up=<span class="number">0</span>;</span><br><span class="line">	    <span class="keyword">if</span>(KEY1==<span class="number">0</span>)<span class="keyword">return</span> KEY_1;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(KEY2==<span class="number">0</span>)<span class="keyword">return</span> KEY_2;</span><br><span class="line">		</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(KEY1==<span class="number">1</span>&amp;&amp;KEY2==<span class="number">1</span>)key_up=<span class="number">1</span>; 	    </span><br><span class="line"> 	<span class="keyword">return</span> <span class="number">0</span>;<span class="comment">// 无按键按下</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 剩下的我们合在一起看，前面我们定义了按键松开标志key_up=1，如果满足key_up为真且KEY1或</span></span><br><span class="line"><span class="comment">KEY2有一个为0（被按下为0），那么我们就把按键标志key_up置0，同时判断是哪个键被按下，然后输</span></span><br><span class="line"><span class="comment">出返回值；如果KEY1,KEY2都没被按下，则key_up还是置1，返回0。 */</span></span><br></pre></td></tr></table></figure>
+<p> 好了，以上基本代码已经讲解完了，可能有的人已经领悟了问题所在，有的人还迷迷糊糊，没关系，我们接下来直击重点：<br> 没有明白的人，我相信只剩逻辑问题了，我们代码中有这样一句话<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(key_up&amp;&amp;(KEY1==<span class="number">0</span>||KEY2==<span class="number">0</span>))</span><br></pre></td></tr></table></figure></p>
+<p> 这句代码告诉我们，你想知道哪个键被按下不仅仅是判断是否有按键被按下这么简单，还要满足按键标志key_up为1才行；如果你不想支持连按，即mode=0，因为我们初始了key_up=1，当我们按下按键，确实能成功响应返回值，但同时key_up也被置0，如果你的手不放开，程序是永远无法进入下一次按键判断的，因为此时key_up为0，不满足条件；只有当你把手放开，程序执行<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(KEY1==<span class="number">1</span>&amp;&amp;KEY2==<span class="number">1</span>)key_up=<span class="number">1</span>;</span><br></pre></td></tr></table></figure></p>
+<p> 这时key_up才被重新置1，下一次按键才能被检测判断，这就是所谓的不支持连按。</p>
+<p> 那么如果你是想支持连按的，因为mode=1，程序每次跑，判断到mode=1，为真，就自动将key_up置1了，尽管你的手不放开，程序都能进入按键检测，你一直按着哪个键，它就不停返回对应的返回值，这就是所谓的支持连按。  </p>
+<p>完结！！！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/STM32/" rel="tag"># STM32</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/24/STM32F103 UCGUI3.90移植+触摸屏教程/" rel="next" title="STM32F103 UCGUI3.90移植+触摸屏教程">
+                <i class="fa fa-chevron-left"></i> STM32F103 UCGUI3.90移植+触摸屏教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/03/百度AI — 语音识别/" rel="prev" title="百度AI — 语音识别">
+                百度AI — 语音识别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码讲解"><span class="nav-number">2.</span> <span class="nav-text">代码讲解</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="堆栈的基本概念 堆栈是一种特殊的线性表，其数据元素以及数据元素间的逻辑关系和线性表的完全相同，其差别是：线性表允许在任意位置插入和删除数据元素，而堆栈只允许在固定一端进行插入和删除数据元素操作。 堆栈中允许进行插入和删除操作的一端成为栈顶，另一端成为栈底；最后进入堆栈的数据元素总是最先退出堆栈，因此堆栈也称作后进先出的线性表。">
+<meta name="keywords" content="线性表,数据结构,堆栈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构(C语言) —— 堆栈">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/04/10/数据结构(C语言) —— 堆栈/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="堆栈的基本概念 堆栈是一种特殊的线性表，其数据元素以及数据元素间的逻辑关系和线性表的完全相同，其差别是：线性表允许在任意位置插入和删除数据元素，而堆栈只允许在固定一端进行插入和删除数据元素操作。 堆栈中允许进行插入和删除操作的一端成为栈顶，另一端成为栈底；最后进入堆栈的数据元素总是最先退出堆栈，因此堆栈也称作后进先出的线性表。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-10T09:42:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构(C语言) —— 堆栈">
+<meta name="twitter:description" content="堆栈的基本概念 堆栈是一种特殊的线性表，其数据元素以及数据元素间的逻辑关系和线性表的完全相同，其差别是：线性表允许在任意位置插入和删除数据元素，而堆栈只允许在固定一端进行插入和删除数据元素操作。 堆栈中允许进行插入和删除操作的一端成为栈顶，另一端成为栈底；最后进入堆栈的数据元素总是最先退出堆栈，因此堆栈也称作后进先出的线性表。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/04/10/数据结构(C语言) —— 堆栈/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据结构(C语言) —— 堆栈 | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/04/10/数据结构(C语言) —— 堆栈/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构(C语言) —— 堆栈
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-10 16:24:19 / 修改时间：17:42:14" itemprop="dateCreated datePublished" datetime="2019-04-10T16:24:19+08:00">2019-04-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/10/数据结构(C语言) —— 堆栈/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/04/10/数据结构(C语言) —— 堆栈/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/04/10/数据结构(C语言) —— 堆栈/" class="leancloud_visitors" data-flag-title="数据结构(C语言) —— 堆栈">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="堆栈的基本概念"><a href="#堆栈的基本概念" class="headerlink" title="堆栈的基本概念"></a>堆栈的基本概念</h1><p> 堆栈是一种特殊的线性表，其数据元素以及数据元素间的逻辑关系和线性表的完全相同，其差别是：线性表允许在任意位置插入和删除数据元素，而堆栈只允许在固定一端进行插入和删除数据元素操作。<br> 堆栈中允许进行插入和删除操作的一端成为栈顶，另一端成为栈底；最后进入堆栈的数据元素总是最先退出堆栈，因此堆栈也称作后进先出的线性表。</p>
+<a id="more"></a>  
+<h1 id="堆栈的顺序表示和实现（顺序堆栈）"><a href="#堆栈的顺序表示和实现（顺序堆栈）" class="headerlink" title="堆栈的顺序表示和实现（顺序堆栈）"></a>堆栈的顺序表示和实现（顺序堆栈）</h1><h2 id="1-顺序堆栈的存储结构"><a href="#1-顺序堆栈的存储结构" class="headerlink" title="1.顺序堆栈的存储结构"></a>1.顺序堆栈的存储结构</h2><p> 定义结构体如下：</p>
+<pre><code>typedef struct
+{
+    DataType stack[MaxStackSize];
+    int top;
+} SeqStack;
+</code></pre><h2 id="2-顺序堆栈的操作实现"><a href="#2-顺序堆栈的操作实现" class="headerlink" title="2.顺序堆栈的操作实现"></a>2.顺序堆栈的操作实现</h2><p> 1.初始化</p>
+<pre><code>void StackInitiate(SeqStack *S)
+{
+    S-&gt;top = 0;            //初始化栈顶下标值（相当于数据元素个数）
+}
+</code></pre><p> 2.判断非空否</p>
+<pre><code>int StackNotEmpty(SeqStack S)
+//非空返回1，空返回0。
+{
+    if(S.top &lt;= 0)return 0;
+    else return 1;
+}
+</code></pre><p> 3.入栈</p>
+<pre><code>int StackPush(SeqStack *S, DataType x)
+//把数据元素值x存入顺序堆栈S中，成功返回1，失败返回0。
+{
+    if(S-&gt;top &gt;= MaxStackSize)
+    {
+        printf(&quot;堆栈已满，无法入栈！&quot;);
+        return 0;
+    }
+    else
+    {
+        S-&gt;stack[S-&gt;top] = x;
+        S-&gt;top ++;
+        return 1;
+    }
+}
+</code></pre><p> 4.出栈</p>
+<pre><code>int StackPop(SeqStack *S, DataType *d)
+//取出的栈顶数据元素值由参数d带回，成功返回1，失败返回0。
+{
+    if(S-&gt;top &lt;= 0)
+    {
+        printf(&quot;堆栈已空！&quot;);
+        return 0;
+    }
+    else
+    {
+        S-&gt;top --;
+        *d = S-&gt;stack[S-&gt;top];
+        return 1;
+    }
+}
+</code></pre><p> 5.取栈顶数据元素</p>
+<pre><code>int StackTop(SeqStack S, DataType *d)
+{
+    if(S.top &lt;= 0)
+    {
+        printf(&quot;堆栈已空！&quot;);
+        return 0;
+    }
+    else
+    {
+        *d = S.stack[S.top -1];
+        return 1;
+    }
+}
+</code></pre><h1 id="堆栈的链式表示和实现（链式堆栈）"><a href="#堆栈的链式表示和实现（链式堆栈）" class="headerlink" title="堆栈的链式表示和实现（链式堆栈）"></a>堆栈的链式表示和实现（链式堆栈）</h1><h2 id="1-链式堆栈的存储结构"><a href="#1-链式堆栈的存储结构" class="headerlink" title="1.链式堆栈的存储结构"></a>1.链式堆栈的存储结构</h2><p> 结点结构体定义如下：</p>
+<pre><code>typedef struct snode
+{
+    DataType data;
+    struct snode *next;
+} LSNode;
+</code></pre><h2 id="2-链式堆栈的操作实现"><a href="#2-链式堆栈的操作实现" class="headerlink" title="2.链式堆栈的操作实现"></a>2.链式堆栈的操作实现</h2><p> 1.初始化</p>
+<pre><code>void StackInitiate(LSNode **head)
+//初始化带头结点链式堆栈
+{
+    *head = (LSNode *)malloc(sizeof(LSNode));
+    (*head)-&gt;next = NULL;
+}
+</code></pre><p> 2.判断非空否</p>
+<pre><code>int StackNotEmpty(LSNode *head)
+{
+    if(head-&gt;next == NULL)return 0;
+    else return 1;
+}
+</code></pre><p> 3.入栈</p>
+<pre><code>void StackPush(LSNode *head, DataType x)
+{
+    LSNode *p;
+
+    p = (LSNode *)malloc(sizeof(LSNode));
+    p-&gt;data = x;
+    p-&gt;next = head-&gt;next;
+    head-&gt;next = p;
+}
+</code></pre><p> 4.出栈</p>
+<pre><code>int StackPop(LSNode *head, DataType *d)
+{
+    LSNode *p = head-&gt;next;
+    if(p == NULL)
+    {
+        printf(&quot;堆栈已空！&quot;);
+        return 0;
+    }
+
+    head-&gt;next = p-&gt;next;
+    *d = p-&gt;data;
+    free(p);
+    return 1;
+}
+</code></pre><p> 5.取栈顶数据元素</p>
+<pre><code>int StackTop(LSNode *head, DataType *d)
+{
+    LSNode *p = head-&gt;next;
+    if(p == NULL)
+    {
+        printf(&quot;堆栈已空!&quot;);
+        return 0;
+    }
+
+    *d = p-&gt;data;
+    return 1;
+}
+</code></pre><p> 6.撤销动态申请空间</p>
+<pre><code>void Destory(LSNode *head)
+{
+    LSNode *p, *p1;
+
+    p = head;
+    while(p!=NULL)
+    {
+        p1 = p;
+        p = p-&gt;next;
+        free(p1);
+    }
+}
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/线性表/" rel="tag"># 线性表</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+            <a href="/tags/堆栈/" rel="tag"># 堆栈</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/30/数据结构(C语言) —— 线性表(链表)/" rel="next" title="数据结构(C语言) —— 线性表(链表)">
+                <i class="fa fa-chevron-left"></i> 数据结构(C语言) —— 线性表(链表)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/12/数据结构(C语言) —— 队列/" rel="prev" title="数据结构(C语言) —— 队列">
+                数据结构(C语言) —— 队列 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#堆栈的基本概念"><span class="nav-number">1.</span> <span class="nav-text">堆栈的基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#堆栈的顺序表示和实现（顺序堆栈）"><span class="nav-number">2.</span> <span class="nav-text">堆栈的顺序表示和实现（顺序堆栈）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-顺序堆栈的存储结构"><span class="nav-number">2.1.</span> <span class="nav-text">1.顺序堆栈的存储结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-顺序堆栈的操作实现"><span class="nav-number">2.2.</span> <span class="nav-text">2.顺序堆栈的操作实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#堆栈的链式表示和实现（链式堆栈）"><span class="nav-number">3.</span> <span class="nav-text">堆栈的链式表示和实现（链式堆栈）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-链式堆栈的存储结构"><span class="nav-number">3.1.</span> <span class="nav-text">1.链式堆栈的存储结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-链式堆栈的操作实现"><span class="nav-number">3.2.</span> <span class="nav-text">2.链式堆栈的操作实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

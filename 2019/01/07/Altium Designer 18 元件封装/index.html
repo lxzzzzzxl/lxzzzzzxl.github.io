@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Altium官方元件库 在介绍元件的封装方法之前。我们先了解一下Altium的官方元件库。在你安装完AD18后，你会发现安装路径下有个Library文件夹，该文件夹放置了AD18默认的集成元件库和仿真元件库。    打开Library文件夹我们可以看到，里面自带了Altera、Lattice和Xilinx三家知名的FPGA芯片公司的元件库，默认经典的连接器库：Miscellaneous Conne">
+<meta name="keywords" content="AD18">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Altium Designer 18 元件封装">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/01/07/Altium Designer 18 元件封装/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="Altium官方元件库 在介绍元件的封装方法之前。我们先了解一下Altium的官方元件库。在你安装完AD18后，你会发现安装路径下有个Library文件夹，该文件夹放置了AD18默认的集成元件库和仿真元件库。    打开Library文件夹我们可以看到，里面自带了Altera、Lattice和Xilinx三家知名的FPGA芯片公司的元件库，默认经典的连接器库：Miscellaneous Conne">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.imgur.com/iYvkQSP.png">
+<meta property="og:image" content="https://i.imgur.com/v4kNupU.png">
+<meta property="og:image" content="https://i.imgur.com/VYxNSEm.png">
+<meta property="og:image" content="https://i.imgur.com/YS17Lyi.png">
+<meta property="og:image" content="https://i.imgur.com/nUc8EcJ.png">
+<meta property="og:image" content="https://i.imgur.com/dkVELy2.png">
+<meta property="og:image" content="https://i.imgur.com/2nog1xe.png">
+<meta property="og:image" content="https://i.imgur.com/Diry7xh.png">
+<meta property="og:image" content="https://i.imgur.com/w5keP6D.png">
+<meta property="og:image" content="https://i.imgur.com/CfNxL9r.png">
+<meta property="og:image" content="https://i.imgur.com/IiA48br.png">
+<meta property="og:image" content="https://i.imgur.com/KE63SgU.png">
+<meta property="og:updated_time" content="2019-01-28T10:21:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Altium Designer 18 元件封装">
+<meta name="twitter:description" content="Altium官方元件库 在介绍元件的封装方法之前。我们先了解一下Altium的官方元件库。在你安装完AD18后，你会发现安装路径下有个Library文件夹，该文件夹放置了AD18默认的集成元件库和仿真元件库。    打开Library文件夹我们可以看到，里面自带了Altera、Lattice和Xilinx三家知名的FPGA芯片公司的元件库，默认经典的连接器库：Miscellaneous Conne">
+<meta name="twitter:image" content="https://i.imgur.com/iYvkQSP.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/01/07/Altium Designer 18 元件封装/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Altium Designer 18 元件封装 | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/01/07/Altium Designer 18 元件封装/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Altium Designer 18 元件封装
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-07 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-07T00:00:00+08:00">2019-01-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-28 18:21:38" itemprop="dateModified" datetime="2019-01-28T18:21:38+08:00">2019-01-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AD18/" itemprop="url" rel="index"><span itemprop="name">AD18</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/07/Altium Designer 18 元件封装/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/07/Altium Designer 18 元件封装/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/07/Altium Designer 18 元件封装/" class="leancloud_visitors" data-flag-title="Altium Designer 18 元件封装">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Altium官方元件库"><a href="#Altium官方元件库" class="headerlink" title="Altium官方元件库"></a>Altium官方元件库</h2><p> 在介绍元件的封装方法之前。我们先了解一下Altium的官方元件库。在你安装完AD18后，你会发现安装路径下有个Library文件夹，该文件夹放置了AD18默认的集成元件库和仿真元件库。  </p>
+<p><img src="https://i.imgur.com/iYvkQSP.png" alt="Library文件夹"><br><img src="https://i.imgur.com/v4kNupU.png" alt="元件库"><br> 打开Library文件夹我们可以看到，里面自带了<a href="http://www.altera.com.cn" target="_blank" rel="noopener">Altera</a>、<a href="http://www.latticesemi.com" target="_blank" rel="noopener">Lattice</a>和<a href="https://china.xilinx.com" target="_blank" rel="noopener">Xilinx</a>三家知名的FPGA芯片公司的元件库，默认经典的连接器库：Miscellaneous Connectors.IntLib和杂项元件库：Miscellaneous Devices.IntLib，还有Simulation文件夹内的仿真元件库。</p>
+<blockquote>
+<p>以上你所看到的就是Altium Designer 18官方自带的元件库，够不够你用我不知道，不够用的话，接下来我将介绍一下如何自己封装元件。<br><a id="more"></a></p>
+</blockquote>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p> 一般创建一个全新的工程，我们需要五步1)<strong>在工作区创建一个PCB工程</strong>  2)<strong>在新建的PCB工程下添加一个原理图</strong>  3)<strong>在新建的PCB工程下添加一个PCB图</strong>  4)<strong>在新建的PCB工程下添加一个原理图库</strong>  5)<strong>在新建的PCB工程下添加一个PCB图库</strong>；保存工程后可以在保存路径下看到如下新建的内容</p>
+<p><img src="https://i.imgur.com/VYxNSEm.png" alt="新建工程"><br> 创建完工程，我们还不急于开始，有句话叫做“磨刀不误砍柴工”，对于我们要封装的元件(这里我以OV7670传感器为例)，我们需要上网找到它的datasheet和原理图<br><img src="https://i.imgur.com/YS17Lyi.png" alt="datasheet"><br><strong>datasheet</strong></p>
+<p><img src="https://i.imgur.com/nUc8EcJ.png" alt="OV7670"><br><strong>原理图</strong><br>自此准备工作就算完成啦。</p>
+<h2 id="元件原理图绘制"><a href="#元件原理图绘制" class="headerlink" title="元件原理图绘制"></a>元件原理图绘制</h2><p> 做完准备工作我们便可以正式开始元件封装的第一步<strong>(绘制元件原理图)</strong>了<br> 1)打开新建的<strong>原理图库</strong>，按照我们找到的原理图将元件绘制出来(如果找不到原理图，就需要一点一点的看datasheet，根据要求绘制原理图，想想就可怕。)，如下：（照着画原理图还是很简单滴）<br><img src="https://i.imgur.com/dkVELy2.png" alt="OV7670原理图"><br> 2）保存！</p>
+<h2 id="元件PCB绘制"><a href="#元件PCB绘制" class="headerlink" title="元件PCB绘制"></a>元件PCB绘制</h2><p> 元件PCB的绘制是一个重点跟难点<br> 1)打开datasheet找到该元件的PCB封装，一般是在文档的末尾，如下：<br><img src="https://i.imgur.com/2nog1xe.png" alt="PCB封装"><br> 2)点击 <strong>工具</strong> 下的<strong>IPC  Compliant  Footprint  Wizard</strong> 菜单进入 IPC 向导，根据datasheet在向导内选择对应封装类型（BGA），并点击 NEXT 进入下一步。<br><img src="https://i.imgur.com/Diry7xh.png" alt="IPC"><br>3)根据datasheet确定对应参数<br><img src="https://i.imgur.com/w5keP6D.png" alt><br>4)点击Next，后面一般按默认选择，直至完成，保存。</p>
+<h2 id="关联元件原理图和PCB"><a href="#关联元件原理图和PCB" class="headerlink" title="关联元件原理图和PCB"></a>关联元件原理图和PCB</h2><p> 绘制完元件的原理图和PCB图，我们还需要将它们关联起来，方法如下：<br> 1）点击原理图库页面下方的<strong>Add Footprint</strong>，弹出如下页面:<br><img src="https://i.imgur.com/CfNxL9r.png" alt><br> 2)点击浏览，选择对应的PCB图，点击确定。<br><img src="https://i.imgur.com/IiA48br.png" alt><br> 这样，一个你自己封装的OV7670就完成了，你会发现在你自己的SCH Library里多了OV7670这个元件，同理你可以继续往自己的库中添加更多的元件，这就是你自己的元件库啦！<br><img src="https://i.imgur.com/KE63SgU.png" alt><br>完结 撒花！！！  </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AD18/" rel="tag"># AD18</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/31/Markdown学习（一）基本语法/" rel="next" title="Markdown学习（一）基本语法">
+                <i class="fa fa-chevron-left"></i> Markdown学习（一）基本语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/" rel="prev" title="W600(TW-01模组) AT开发初探(一.固件下载)">
+                W600(TW-01模组) AT开发初探(一.固件下载) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Altium官方元件库"><span class="nav-number">1.</span> <span class="nav-text">Altium官方元件库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元件原理图绘制"><span class="nav-number">3.</span> <span class="nav-text">元件原理图绘制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元件PCB绘制"><span class="nav-number">4.</span> <span class="nav-text">元件PCB绘制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关联元件原理图和PCB"><span class="nav-number">5.</span> <span class="nav-text">关联元件原理图和PCB</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

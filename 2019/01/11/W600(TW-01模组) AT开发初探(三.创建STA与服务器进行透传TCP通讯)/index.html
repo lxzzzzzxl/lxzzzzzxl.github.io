@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言上一篇博客我们讲解了W600-TW-01模组创建STA与服务器进行TCP通讯，这一篇我们讲一下透传TCP通讯，那什么是透传TCP通讯，它跟上一篇的普通通讯有什么区别呢？我不是专业学通讯的，我也不是很清楚，大家想要搞明白这个问题的话，可以自行百度…,在这里我只说说自己简单地理解，在我看来，透传TCP通讯与普通TCP通讯的区别在于，当你设置触发了透传模式后，后续我们就可以直接发送数据，而不需要每次">
+<meta name="keywords" content="W600,AT开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="前言上一篇博客我们讲解了W600-TW-01模组创建STA与服务器进行TCP通讯，这一篇我们讲一下透传TCP通讯，那什么是透传TCP通讯，它跟上一篇的普通通讯有什么区别呢？我不是专业学通讯的，我也不是很清楚，大家想要搞明白这个问题的话，可以自行百度…,在这里我只说说自己简单地理解，在我看来，透传TCP通讯与普通TCP通讯的区别在于，当你设置触发了透传模式后，后续我们就可以直接发送数据，而不需要每次">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.imgur.com/ZpL6qwA.jpg">
+<meta property="og:image" content="https://i.imgur.com/R7siyKS.jpg">
+<meta property="og:image" content="https://i.imgur.com/cEJJ0EJ.jpg">
+<meta property="og:image" content="https://i.imgur.com/rfnM2dx.jpg">
+<meta property="og:image" content="https://i.imgur.com/1kyOWnF.jpg">
+<meta property="og:image" content="https://i.imgur.com/NNSNbai.png">
+<meta property="og:updated_time" content="2019-01-28T10:17:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)">
+<meta name="twitter:description" content="前言上一篇博客我们讲解了W600-TW-01模组创建STA与服务器进行TCP通讯，这一篇我们讲一下透传TCP通讯，那什么是透传TCP通讯，它跟上一篇的普通通讯有什么区别呢？我不是专业学通讯的，我也不是很清楚，大家想要搞明白这个问题的话，可以自行百度…,在这里我只说说自己简单地理解，在我看来，透传TCP通讯与普通TCP通讯的区别在于，当你设置触发了透传模式后，后续我们就可以直接发送数据，而不需要每次">
+<meta name="twitter:image" content="https://i.imgur.com/ZpL6qwA.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯) | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-11 18:37:39" itemprop="dateCreated datePublished" datetime="2019-01-11T18:37:39+08:00">2019-01-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-28 18:17:44" itemprop="dateModified" datetime="2019-01-28T18:17:44+08:00">2019-01-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/" itemprop="url" rel="index"><span itemprop="name">W600</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/AT开发/" itemprop="url" rel="index"><span itemprop="name">AT开发</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/" class="leancloud_visitors" data-flag-title="W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上一篇博客我们讲解了W600-TW-01模组创建STA与服务器进行TCP通讯，这一篇我们讲一下透传TCP通讯，那什么是透传TCP通讯，它跟上一篇的普通通讯有什么区别呢？我不是专业学通讯的，我也不是很清楚，大家想要搞明白这个问题的话，可以自行百度…,在这里我只说说自己简单地理解，在我看来，透传TCP通讯与普通TCP通讯的区别在于，当你设置触发了透传模式后，后续我们就可以直接发送数据，而不需要每次发送数据都要先经过发送数据指令，而且触发透传模式后，不会再对指令进行响应(指令被当作数据发送出去了)。下面我们正式讲解如何创建STA与服务器进行透传TCP通讯。<br><a id="more"></a></p>
+<h1 id="创建STA与服务器进行透传TCP通讯"><a href="#创建STA与服务器进行透传TCP通讯" class="headerlink" title="创建STA与服务器进行透传TCP通讯"></a>创建STA与服务器进行透传TCP通讯</h1><p>有了上一篇的基础，这部分我只作简单的讲解。首先我们需要执行上篇博客的内容：创建STA与服务器进行TCP通讯；<br>上一篇我们用的是PC上的网络调试助手作为服务器，这一次我们改用手机来配置服务器，(我用的是ios系统的)，我们先去应用商店下载一个TCP软件，我找到的是这个<br><img src="https://i.imgur.com/ZpL6qwA.jpg" width="300" height="300"><br>同样的，配置好主机地址以及端口号，这里需要说明的是：主机地址需要服务端跟客户端都在同一个局域网内(上一篇使用网络调试助手也一样)，这样才能通讯成功，这里我的手机跟W600都连接了同一个wifi，所以是在一个局域网内，详见下图：<br><img src="https://i.imgur.com/R7siyKS.jpg" width="300" height="500"><br><img src="https://i.imgur.com/cEJJ0EJ.jpg" width="300" height="500"><br>这里只需要填写端口号的原因是，手机连上wifi后已经自动分配了ip地址，所以我们服务器地址就是手机分配到的ip地址，ip地址可以从路由器后台查看。<br>完成上述步骤后，创建STA与服务器进行TCP通讯，观察到如下图即说明连接成功：<br><img src="https://i.imgur.com/rfnM2dx.jpg" width="300" height="500"><br>紧接着就是配置透传TCP通讯了：<br><strong>1.设置进入透传模式</strong>  </p>
+<pre><code>AT+CIPMODE=1
+响应：
+SEND OK  
+</code></pre><p><strong>2.触发透传模式</strong></p>
+<pre><code>AT+CIPSEND
+响应：
+&gt; //触发透传模式后，后续可以直接发送数据，不会对指令进行响应  
+</code></pre><p><strong>3.服务器端与客户端互发数据</strong><br>就是直接发送了，上图：<br><img src="https://i.imgur.com/1kyOWnF.jpg" width="300" height="500"><br><img src="https://i.imgur.com/NNSNbai.png" width="500"><br>上图是服务器端发送数据，客户端接收，反过来也是可以的；这样就可以不停的互发数据了。<br><strong>5.退出透传模式</strong></p>
+<pre><code>+++ //不要加回车换行符  
+</code></pre><p>推出透传模式这里要着重讲一下，很多人都没办法成功推出，原因是发送+++时，串口调试助手“发送新行”要取消勾选，然后点击发送，不能使用回车，推出透传模式后要重新勾选“发送新行”,这样就可以发送新的AT指令啦。<br>本篇完结，谢谢观看！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/W600/" rel="tag"># W600</a>
+          
+            <a href="/tags/AT开发/" rel="tag"># AT开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/10/W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯)/" rel="next" title="W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯)">
+                <i class="fa fa-chevron-left"></i> W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/13/W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯)/" rel="prev" title="W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯)">
+                W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建STA与服务器进行透传TCP通讯"><span class="nav-number">2.</span> <span class="nav-text">创建STA与服务器进行透传TCP通讯</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

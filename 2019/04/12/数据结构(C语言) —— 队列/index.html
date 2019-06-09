@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="队列的基本概念队列也是一种特殊的线性表，队列的数据元素及数据元素间的逻辑关系和线性表完全相同；其差别在于，线性表允许在任意位置插入和删除数据元素，而队列只允许在其一端进行插入操作，在另一端进行删除操作；进行插入操作的一端称为队尾，允许删除操作的一端称为队头。队列是一种先进先出的线性表。">
+<meta name="keywords" content="线性表,数据结构,队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构(C语言) —— 队列">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/04/12/数据结构(C语言) —— 队列/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="队列的基本概念队列也是一种特殊的线性表，队列的数据元素及数据元素间的逻辑关系和线性表完全相同；其差别在于，线性表允许在任意位置插入和删除数据元素，而队列只允许在其一端进行插入操作，在另一端进行删除操作；进行插入操作的一端称为队尾，允许删除操作的一端称为队头。队列是一种先进先出的线性表。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-14T02:42:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构(C语言) —— 队列">
+<meta name="twitter:description" content="队列的基本概念队列也是一种特殊的线性表，队列的数据元素及数据元素间的逻辑关系和线性表完全相同；其差别在于，线性表允许在任意位置插入和删除数据元素，而队列只允许在其一端进行插入操作，在另一端进行删除操作；进行插入操作的一端称为队尾，允许删除操作的一端称为队头。队列是一种先进先出的线性表。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/04/12/数据结构(C语言) —— 队列/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据结构(C语言) —— 队列 | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/04/12/数据结构(C语言) —— 队列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构(C语言) —— 队列
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-12 20:27:19" itemprop="dateCreated datePublished" datetime="2019-04-12T20:27:19+08:00">2019-04-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-14 10:42:34" itemprop="dateModified" datetime="2019-04-14T10:42:34+08:00">2019-04-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/12/数据结构(C语言) —— 队列/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/04/12/数据结构(C语言) —— 队列/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/04/12/数据结构(C语言) —— 队列/" class="leancloud_visitors" data-flag-title="数据结构(C语言) —— 队列">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="队列的基本概念"><a href="#队列的基本概念" class="headerlink" title="队列的基本概念"></a>队列的基本概念</h1><p>队列也是一种特殊的线性表，队列的数据元素及数据元素间的逻辑关系和线性表完全相同；其差别在于，线性表允许在任意位置插入和删除数据元素，而队列只允许在其一端进行插入操作，在另一端进行删除操作；进行插入操作的一端称为队尾，允许删除操作的一端称为队头。队列是一种先进先出的线性表。</p>
+<a id="more"></a>  
+<h2 id="顺序循环队列的表示和实现"><a href="#顺序循环队列的表示和实现" class="headerlink" title="顺序循环队列的表示和实现"></a>顺序循环队列的表示和实现</h2><h3 id="顺序循环队列的结构体定义如下："><a href="#顺序循环队列的结构体定义如下：" class="headerlink" title="顺序循环队列的结构体定义如下："></a>顺序循环队列的结构体定义如下：</h3><pre><code>typedef struct
+{
+    DataType queue[MaxQueueSize];
+    int rear;                //队尾指针
+    int front;               //队头指针
+    int count;             //计数器
+}SeqCQueue;
+</code></pre><h3 id="顺序循环队列的算法实现如下："><a href="#顺序循环队列的算法实现如下：" class="headerlink" title="顺序循环队列的算法实现如下："></a>顺序循环队列的算法实现如下：</h3><p>1.初始化</p>
+<pre><code>void QueueInitiate(SeqCQueue *Q)
+{
+    Q-&gt;rear = 0;
+    Q-&gt;front = 0;
+    Q-&gt;count = 0;
+}
+</code></pre><p>2.判断非空否</p>
+<pre><code>int QueueNotEmpty(SeqCQueue Q)
+{
+    if(Q.count != 0) return 1;
+    else return 0;
+}
+</code></pre><p>3.入队列</p>
+<pre><code>QueueAppend(SeqCQueue *Q, DataType x)
+{
+    if(Q-&gt;count &gt; 0 &amp;&amp; Q-&gt;rear == Q-&gt;front)
+    {
+        printf(&quot;队列已满无法插入！&quot;);
+        return 0;
+    }
+    else
+    {
+        Q-&gt;queue[Q-&gt;rear] = x;
+        Q-&gt;rear = (Q-&gt;rear + 1) % MaxQueueSize;
+        Q-&gt;count ++;
+        return 1;
+    }
+}
+</code></pre><p>4.出队列</p>
+<pre><code>QueueDelete(SeqCQueue *Q, DataType *d)
+{
+    if(Q-&gt;count == 0)
+    {
+        printf(&quot;队列已空！&quot;);
+        return 0;
+    }
+    else
+    {
+        *d = Q-&gt;queue[Q-&gt;front];
+        Q-&gt;front = (Q-&gt;front + 1) % MaxQueueSize;
+        Q-&gt;count --;
+        return 1;
+    }
+}
+</code></pre><p>5.取队头数据元素</p>
+<pre><code>int QueueGet(SeqCQueue Q, DataType *d)
+{
+    if(Q.count == 0)
+    {
+        printf(&quot;队列已空！&quot;);
+        return 0；
+    }
+    else
+    {
+        *d = Q.queue[Q.front];
+        return 1;
+    }
+}
+</code></pre><h2 id="链式队列的表示和实现"><a href="#链式队列的表示和实现" class="headerlink" title="链式队列的表示和实现"></a>链式队列的表示和实现</h2><h3 id="链式队列的存储结构"><a href="#链式队列的存储结构" class="headerlink" title="链式队列的存储结构"></a>链式队列的存储结构</h3><p> 链式队列中结点的结构体定义如下：</p>
+<pre><code>typedef struct qnode
+{
+    DataType data;
+    struct qnode *next;
+}LQNode;
+</code></pre><p> 定义链式队列的队头指针front和队尾指针rear的结构体如下：</p>
+<pre><code>typedef struct
+{
+    LQNode *front;
+    LQNode *rear;
+}LQueue;                   //可看做初始队列
+</code></pre><h3 id="链式队列操作的实现"><a href="#链式队列操作的实现" class="headerlink" title="链式队列操作的实现"></a>链式队列操作的实现</h3><p>1.初始化  </p>
+<pre><code>void QueueInitiate(LQueue *Q)
+{
+    Q-&gt;rear = NULL;
+    Q-&gt;front = NULL;
+}
+</code></pre><p>2.判断非空否  </p>
+<pre><code>int QueueNotEmpty(LQueue Q)
+{
+    if(Q.front == NULL) return 0;
+    else return 1;
+}
+</code></pre><p>3.入队列  </p>
+<pre><code>void QueueAppend(LQueue *Q, DataType x)
+{
+    LQNode *p;
+    p = (LQNode *)malloc(sizeof(LQNode));
+
+    p-&gt;data = x;
+    p-&gt;next = NULL;
+
+    if(Q-&gt;rear != NULL) Q-&gt;rear-&gt;next = p;  //队列原本非空时，队尾加新节点
+    Q-&gt;rear = p;                            //修改队尾指针
+    if(Q-&gt;front == NULL) Q-&gt;front = p;      //队列原本为空时，修改队头指针
+}
+</code></pre><p>4.出队列  </p>
+<pre><code>int QueueDelete(LQueue *Q, DataType *d)
+{
+    LQNode *p;
+    if(Q-&gt;front == NULL)
+    {
+        printf(&quot;队列已空！&quot;);
+        return 0;
+    }
+    else
+    {
+        *d = Q-&gt;front-&gt;data;
+        p = Q-&gt;front;
+        Q-&gt;front = Q-&gt;front-&gt;next;
+        if(Q-&gt;front == NULL) Q-&gt;rear = NULL;    //删除最后一个结点后，要置队尾指针为空
+
+        free(p);
+        return 1;
+    }
+}
+</code></pre><p>5.取队头数据元素  </p>
+<pre><code>int QueueGet(LQueue Q, DataType *d)
+{
+    if(Q.front == NULL)
+    {
+        printf(&quot;队列已空！&quot;);
+        return 0;
+    }
+    else
+    {
+        *d = Q.front-&gt;data;
+        return 1;
+    }
+}
+</code></pre><p>6.撤销动态申请空间  </p>
+<pre><code>void Destory(LQueue Q)
+{
+    LQNode *p, *p1;
+
+    p = Q.front;
+    while(p != NULL)
+    {
+        p1 = p;
+        p = p-&gt;next;
+        free(p1);
+    }
+}
+</code></pre><h2 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h2><p>优先级队列与一般队列的主要区别是：优先级队列的出队操作不是把队头元素出队列，而是把队列中优先级最高的数据元素出队列。</p>
+<h3 id="顺序优先级队列的设计和实现"><a href="#顺序优先级队列的设计和实现" class="headerlink" title="顺序优先级队列的设计和实现"></a>顺序优先级队列的设计和实现</h3><p>优先级队列的数据元素的结构体定义如下：</p>
+<pre><code>typedef struct
+{
+    int priority;           //优先级
+     ElemType elem;      //其他内容
+} DataType;
+</code></pre><p>优先级队列的结构体定义如下：</p>
+<pre><code>typedef struct
+{
+    DataType queue[MaxQueueSize];
+    int size;
+} SeqPQueue;
+</code></pre><p>1.初始化</p>
+<pre><code>void QueueInitiate(SeqPQueue *Q)
+{
+    Q-&gt;size = 0;
+}
+</code></pre><p>2.判断非空否</p>
+<pre><code>int QueueNotEmpty(SeqPQueue Q)
+{
+    if(Q.size &lt;= 0) return 0;
+    else return 1;
+}
+</code></pre><p>3.入队列</p>
+<pre><code>int QueueAppend(SeqPQueue *Q, DataType x)
+{
+    if(Q-&gt;size &gt;=MaxQueueSize)
+    {
+        printf(“队列已满！”);
+        return 0;
+    }
+    else
+    {
+        Q-&gt;queue[Q-&gt;size] = x;
+        Q-&gt;size++;
+        return 1;
+    }
+}
+</code></pre><p>4.出队列</p>
+<pre><code>int QueueDelete(SeqPQueue *Q, DataType *d)
+{
+    DataType min;
+    int minIndex, i;
+    if(Q-&gt;size &lt;= 0)
+    {
+        printf(“队列已空！”);
+        return 0;
+    }
+    else
+    {
+        min = Q-&gt;queue[0];      //初始queue[0]为优先级最高元素
+        minIndex = 0;               //minIndex为优先级最高元素下标
+        for(i=0; i&lt;Q-&gt;size; i++)    //寻找优先级最高元素对应下标
+            if(Q-&gt;queue[i].priority &lt;min.priority)
+            {
+                min = Q-&gt;queue[i];
+                minIndex = i;
+            }
+            *d = Q-&gt;queue[minIndex];        //找到优先级最高元素
+            for(i=minIndex+1; i&lt;Q-&gt;size; i++) //数据元素依次前移
+                Q-&gt;queue[i-1] = q-&gt;queue[i];
+
+            Q-&gt;size --;
+            return 1;
+    }
+}
+</code></pre><p>5.取队列优先级最高元素</p>
+<pre><code>int QueueGet(SeqPQueue *Q, DataType x)
+{
+    DataType min;
+    int minIndex, i;
+
+    if(Q-&gt;size &lt;= 0)
+    {
+        printf(“队列已空！”);
+        return 0;
+    }
+    else
+    {
+        min = Q-&gt;queue[0];
+        minIndex = 0;
+        for(i=1; i&lt;Q-&gt;size; i++)
+            if(Q-&gt;queue[i].priority &lt; min.priority)
+            {
+                min = Q-&gt;queue[i];
+                minIndex = i;
+            }
+
+        *d = Q-&gt;queue[minIndex];
+        return 1;
+    }
+}
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/线性表/" rel="tag"># 线性表</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+            <a href="/tags/队列/" rel="tag"># 队列</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/10/数据结构(C语言) —— 堆栈/" rel="next" title="数据结构(C语言) —— 堆栈">
+                <i class="fa fa-chevron-left"></i> 数据结构(C语言) —— 堆栈
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/28/RT-Thread学习笔记  —— 线程管理/" rel="prev" title="RT-Thread学习笔记 —— 线程管理">
+                RT-Thread学习笔记 —— 线程管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#队列的基本概念"><span class="nav-number">1.</span> <span class="nav-text">队列的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#顺序循环队列的表示和实现"><span class="nav-number">1.1.</span> <span class="nav-text">顺序循环队列的表示和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序循环队列的结构体定义如下："><span class="nav-number">1.1.1.</span> <span class="nav-text">顺序循环队列的结构体定义如下：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序循环队列的算法实现如下："><span class="nav-number">1.1.2.</span> <span class="nav-text">顺序循环队列的算法实现如下：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链式队列的表示和实现"><span class="nav-number">1.2.</span> <span class="nav-text">链式队列的表示和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#链式队列的存储结构"><span class="nav-number">1.2.1.</span> <span class="nav-text">链式队列的存储结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式队列操作的实现"><span class="nav-number">1.2.2.</span> <span class="nav-text">链式队列操作的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优先级队列"><span class="nav-number">1.3.</span> <span class="nav-text">优先级队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序优先级队列的设计和实现"><span class="nav-number">1.3.1.</span> <span class="nav-text">顺序优先级队列的设计和实现</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言 博主本人现在大三，放寒假已经一个星期了，原本计划好的寒假学习任务也陆陆续续展开了，尽管每天睡到12点(习惯熬夜)，但还是会坚持每天学习新的知识，我给自己安排学习的东西很多(未来打算走嵌入式物联网方向)，因为不是专业的(本人电气工程及其自动化专业)，基本是自学，需要学的东西太多了，专注一样会容易疲倦，所以我就变化着来学，也不知道这样是否合理，总之学就完事了。这篇博客写的是有关wifi模块的，学">
+<meta name="keywords" content="W600,AT开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="W600(TW-01模组) AT开发初探(一.固件下载)">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="前言 博主本人现在大三，放寒假已经一个星期了，原本计划好的寒假学习任务也陆陆续续展开了，尽管每天睡到12点(习惯熬夜)，但还是会坚持每天学习新的知识，我给自己安排学习的东西很多(未来打算走嵌入式物联网方向)，因为不是专业的(本人电气工程及其自动化专业)，基本是自学，需要学的东西太多了，专注一样会容易疲倦，所以我就变化着来学，也不知道这样是否合理，总之学就完事了。这篇博客写的是有关wifi模块的，学">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://docs.thingsturn.com/_images/w600_soc1.png">
+<meta property="og:image" content="http://docs.thingsturn.com/_images/tw_011.png">
+<meta property="og:image" content="https://i.imgur.com/rdqTLZ5.jpg">
+<meta property="og:image" content="http://docs.thingsturn.com/_images/fw_reboot.png">
+<meta property="og:image" content="http://docs.thingsturn.com/_images/at_download.png">
+<meta property="og:image" content="http://docs.thingsturn.com/_images/at_test.png">
+<meta property="og:image" content="https://i.imgur.com/KhtC2Z1.png">
+<meta property="og:updated_time" content="2019-01-28T10:17:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="W600(TW-01模组) AT开发初探(一.固件下载)">
+<meta name="twitter:description" content="前言 博主本人现在大三，放寒假已经一个星期了，原本计划好的寒假学习任务也陆陆续续展开了，尽管每天睡到12点(习惯熬夜)，但还是会坚持每天学习新的知识，我给自己安排学习的东西很多(未来打算走嵌入式物联网方向)，因为不是专业的(本人电气工程及其自动化专业)，基本是自学，需要学的东西太多了，专注一样会容易疲倦，所以我就变化着来学，也不知道这样是否合理，总之学就完事了。这篇博客写的是有关wifi模块的，学">
+<meta name="twitter:image" content="http://docs.thingsturn.com/_images/w600_soc1.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>W600(TW-01模组) AT开发初探(一.固件下载) | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">W600(TW-01模组) AT开发初探(一.固件下载)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-10 20:37:39" itemprop="dateCreated datePublished" datetime="2019-01-10T20:37:39+08:00">2019-01-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-28 18:17:26" itemprop="dateModified" datetime="2019-01-28T18:17:26+08:00">2019-01-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/" itemprop="url" rel="index"><span itemprop="name">W600</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/AT开发/" itemprop="url" rel="index"><span itemprop="name">AT开发</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/" class="leancloud_visitors" data-flag-title="W600(TW-01模组) AT开发初探(一.固件下载)">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>博主本人现在大三，放寒假已经一个星期了，原本计划好的寒假学习任务也陆陆续续展开了，尽管每天睡到12点(习惯熬夜)，但还是会坚持每天学习新的知识，我给自己安排学习的东西很多(未来打算走嵌入式物联网方向)，因为不是专业的(本人电气工程及其自动化专业)，基本是自学，需要学的东西太多了，专注一样会容易疲倦，所以我就变化着来学，也不知道这样是否合理，总之学就完事了。<br>这篇博客写的是有关wifi模块的，学习wifi模块的打算有一段时间了，一直腾不出时间来，放假了终于能好好捯饬捯饬了，之前参加了正点原子的新品发布会，他们送了一个W600芯片的TW-01模组，那就从这个入门学习吧，网上的资料放眼望去都是ESP8266的，不过我想应该都是差不多的，况且资料少才显得有挑战，毕竟还有官方文档可以看嘛。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="W600-介绍"><a href="#W600-介绍" class="headerlink" title="W600 介绍"></a>W600 介绍</h1><h2 id="W600-WiFi-芯片"><a href="#W600-WiFi-芯片" class="headerlink" title="W600 WiFi 芯片"></a>W600 WiFi 芯片</h2><p><img src="http://docs.thingsturn.com/_images/w600_soc1.png" width="300" height="200"> </p>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p> W600_SoC芯片集成 Cortex-M3 内核，内置 Flash，集成射频收发前端 RF Transceiver，CMOS PA 功率放 大器，基带处理器/媒体访问控制，支持 SDIO、SPI、UART、GPIO、I²C、PWM、I²S、7816 等接口, 支持 多种加解密协议，如 PRNG(Pseudo random Number Generator)/ SHA1/ MD5/ RC4/ DES/ 3DES/ AES/ CRC 等。<br> W600是一款支持多接口、多协议的无线局域网 IEEE802.11n（1T1R）的 SoC 芯片。适用于智能家 电、智能家居、无线音视频、智能玩具、医疗监护、工业控制等物联网应用领域。  </p>
+<h2 id="TW-01-WiFi-模组"><a href="#TW-01-WiFi-模组" class="headerlink" title="TW-01 WiFi 模组"></a>TW-01 WiFi 模组</h2><p><img src="http://docs.thingsturn.com/_images/tw_011.png" width="300" height="200">  </p>
+<h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p> TW-01无线模块是星通智联自主研发设计的一款高性价比Wi-Fi SOC模组。该系列模块支持标准的 802.11 b/g/n 协议，内置完整的 TCP/IP 协议栈。  </p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
+<li>采用Cortex-M3 处理器，主频高达80MHz</li>
+<li>内置8Mbit Flash</li>
+<li>内置 288KB SRAM，用户可用超过160KB</li>
+<li>支持UART/PWM/等接口</li>
+<li>集成双工I²S控制器，支持32KHz~192KHz</li>
+<li>硬件支持多种加解密协议</li>
+<li>支持SWD 调试</li>
+<li>集成 Wi-Fi MAC/ BB/RF/PA/LNA</li>
+<li>支持HT40，wifi速率最高150Mbps</li>
+<li>支持 STA/AP/STA+AP 工作模式</li>
+<li>支持 OneShot / AirKiss 一键配网</li>
+<li>串口速率最高可达2Mbps</li>
+<li>通用AT指令可快速上手</li>
+<li>支持串口本地升级和远程固件升级（FOTA）</li>
+<li>开发环境支持keil,Eclipse   </li>
+</ul>
+<h1 id="AT开发"><a href="#AT开发" class="headerlink" title="AT开发"></a>AT开发</h1><p>了解完W600这款wifi芯片以及基于它的TW-01模组之后，我们就要正式开始对它的学习了，本篇博文我们讲解的是AT开发的部分，除了AT开发还有SDK开发，这两者之间有什么区别呢？<br><strong>SDK方法：</strong></p>
+<pre><code>优势：让系统成本最少,体积最小
+劣势：新手需要一个礼拜到半个月的时间去熟悉代码的研读
+</code></pre><p><strong>AT方法：</strong></p>
+<pre><code>优势：只需要知道几条AT指令即可用外部单片机实现网络通讯！开发速度快。
+劣势：增加了外置CPU成本
+</code></pre><p> 那么对于我们新手上路，从简单的入手，了解一下AT开发是很有必要的，AT开发说简单其实也没那么容易，具体怎么操作，我们言归正传：  </p>
+<h2 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1.准备工作"></a>1.准备工作</h2><ul>
+<li>电脑：固件下载当前仅支持Windows操作系统</li>
+<li>软件：串口调试助手</li>
+<li>固件：AT兼容固件</li>
+<li>硬件：TB-01开发板 或 W600系列模组、开发板(这里我们使用的是TW-01模组)   </li>
+</ul>
+<h2 id="2-TW-01模组串口通信"><a href="#2-TW-01模组串口通信" class="headerlink" title="2.TW-01模组串口通信"></a>2.TW-01模组串口通信</h2><p> 我们进行AT固件下载的方式是模组连接PC，然后通过串口工具下载AT固件到芯片里，那么显然的，我们的模组需要与PC进行串口通讯，但是我所使用的TW-01是个简单的模组，需要使用usb转ttl模块才能将模组连上PC，如果你有usb转ttl工具自然是方便多了，如果没有还有一个办法，就是利用你手头带串口的开发板(例如stm32)<br><img src="https://i.imgur.com/rdqTLZ5.jpg" width="300" height="500"><br> 将开发板的3.3V GND RXD TXD 分别与模组的3V3 GND RX0 TX0连接。<br>注：此时连接状态 WiFi模块–&gt;单片机–&gt;串口助手（PC），由于WiFi模块和单片机的TXD和RXD处于正接状态，单片机和WiFi模块并不通信，相当于WiFi模块直连串口助手。<br> 连接完成后，打开串口助手，这时串口助手可以自动检测到对应的串口，复位一下模组(RST置低电平)，观察到下图现象即说明通信成功。<br><img src="http://docs.thingsturn.com/_images/fw_reboot.png" width="800" height="600"></p>
+<h2 id="3-固件烧录、测试"><a href="#3-固件烧录、测试" class="headerlink" title="3.固件烧录、测试"></a>3.固件烧录、测试</h2><ul>
+<li>按照下图操作，使用星通智联串口工具烧录、测试;</li>
+<li>点击“下载”进行固件下载，(波特率默认使用 115200 bps，支持 2Mbps！;)<br><img src="http://docs.thingsturn.com/_images/at_download.png" width="800" height="600"><br><img src="http://docs.thingsturn.com/_images/at_test.png" width="800" height="600"><br>到此，如果没有意外，W600系列产品AT固件的下载调试就完成了。<br>但是。。。博主本人就遇到了问题，搞了好久都解决不了，最后联系原厂工程师远程协助才把问题解决，原因是由于我手头的TW-01模组的BOOT版本太旧了，导致刷新版的固件怼不进去，问题搞明白后自然就有解决办法了：准备好新的BOOT固件，先刷新BOOT，然后再执行上述的操作，详见下图：<br><img src="https://i.imgur.com/KhtC2Z1.png" width="800" height="600"><br>全部搞定之后，就可以使用AT指令对模块进行操作啦。<br>本篇完结，下一次我们讲解简单的AT指令吧！！！</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/W600/" rel="tag"># W600</a>
+          
+            <a href="/tags/AT开发/" rel="tag"># AT开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/07/Altium Designer 18 元件封装/" rel="next" title="Altium Designer 18 元件封装">
+                <i class="fa fa-chevron-left"></i> Altium Designer 18 元件封装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/10/W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯)/" rel="prev" title="W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯)">
+                W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#W600-介绍"><span class="nav-number">2.</span> <span class="nav-text">W600 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#W600-WiFi-芯片"><span class="nav-number">2.1.</span> <span class="nav-text">W600 WiFi 芯片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">2.1.1.</span> <span class="nav-text">概述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TW-01-WiFi-模组"><span class="nav-number">2.2.</span> <span class="nav-text">TW-01 WiFi 模组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特性"><span class="nav-number">2.2.2.</span> <span class="nav-text">特性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AT开发"><span class="nav-number">3.</span> <span class="nav-text">AT开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-准备工作"><span class="nav-number">3.1.</span> <span class="nav-text">1.准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-TW-01模组串口通信"><span class="nav-number">3.2.</span> <span class="nav-text">2.TW-01模组串口通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-固件烧录、测试"><span class="nav-number">3.3.</span> <span class="nav-text">3.固件烧录、测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

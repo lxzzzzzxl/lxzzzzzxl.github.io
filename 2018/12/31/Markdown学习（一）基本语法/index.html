@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="写博客，你需要了解下Markdown基本语法1.关于Markdown  Markdown介绍：Wiki:Markdown   Markdown是一种轻量级标记语言，创始人为约翰·格鲁伯（英语：John Gruber）。它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML（或者HTML）文档”。这种语言吸收了很多在电子邮件中已有的纯文本标记的特性。   由于Markdown的轻量">
+<meta name="keywords" content="Markdown">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markdown学习（一）基本语法">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2018/12/31/Markdown学习（一）基本语法/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="写博客，你需要了解下Markdown基本语法1.关于Markdown  Markdown介绍：Wiki:Markdown   Markdown是一种轻量级标记语言，创始人为约翰·格鲁伯（英语：John Gruber）。它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML（或者HTML）文档”。这种语言吸收了很多在电子邮件中已有的纯文本标记的特性。   由于Markdown的轻量">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.imgur.com/vp71QsV.png">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg">
+<meta property="og:updated_time" content="2019-01-28T10:20:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Markdown学习（一）基本语法">
+<meta name="twitter:description" content="写博客，你需要了解下Markdown基本语法1.关于Markdown  Markdown介绍：Wiki:Markdown   Markdown是一种轻量级标记语言，创始人为约翰·格鲁伯（英语：John Gruber）。它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML（或者HTML）文档”。这种语言吸收了很多在电子邮件中已有的纯文本标记的特性。   由于Markdown的轻量">
+<meta name="twitter:image" content="https://i.imgur.com/vp71QsV.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2018/12/31/Markdown学习（一）基本语法/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Markdown学习（一）基本语法 | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2018/12/31/Markdown学习（一）基本语法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Markdown学习（一）基本语法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-31 22:37:39" itemprop="dateCreated datePublished" datetime="2018-12-31T22:37:39+08:00">2018-12-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-28 18:20:30" itemprop="dateModified" datetime="2019-01-28T18:20:30+08:00">2019-01-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Modelsim/" itemprop="url" rel="index"><span itemprop="name">Modelsim</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/31/Markdown学习（一）基本语法/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/12/31/Markdown学习（一）基本语法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2018/12/31/Markdown学习（一）基本语法/" class="leancloud_visitors" data-flag-title="Markdown学习（一）基本语法">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="写博客，你需要了解下Markdown基本语法"><a href="#写博客，你需要了解下Markdown基本语法" class="headerlink" title="写博客，你需要了解下Markdown基本语法"></a>写博客，你需要了解下Markdown基本语法</h1><h2 id="1-关于Markdown"><a href="#1-关于Markdown" class="headerlink" title="1.关于Markdown"></a>1.关于Markdown</h2><blockquote>
+<ul>
+<li><strong>Markdown介绍</strong>：<a href="http://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener">Wiki:Markdown</a>  <ul>
+<li>Markdown是一种<a href="https://zh.wikipedia.org/wiki/%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80" target="_blank" rel="noopener">轻量级标记语言</a>，创始人为<a href="https://zh.wikipedia.org/wiki/%E7%B4%84%E7%BF%B0%C2%B7%E6%A0%BC%E9%AD%AF%E4%BC%AF" target="_blank" rel="noopener">约翰·格鲁伯</a>（英语：John Gruber）。它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的<a href="https://zh.wikipedia.org/wiki/XHTML" target="_blank" rel="noopener">XHTML</a>（或者<a href="https://zh.wikipedia.org/wiki/HTML" target="_blank" rel="noopener">HTML</a>）文档”。这种语言吸收了很多在电子邮件中已有的纯文本标记的特性。  </li>
+<li>由于Markdown的轻量化、易读易写特性，并且对于图片，图表、数学式都有支持，当前许多网站都广泛使用 Markdown 来撰写帮助文档或是用于论坛上发表消息。例如：GitHub、reddit、Diaspora、Stack Exchange、OpenStreetMap 、SourceForge等。甚至Markdown能被使用来撰写电子书。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>Markdown的优点</strong>：  <ul>
+<li>写作中添加简单符号即完成排版，所见即所得。让你专注于文字而不是排版。  </li>
+<li>格式转换方便，Markdown 的文本你可以轻松转换为 html、pdf等。  </li>
+<li>可以保存为纯文本</li>
+<li>……  </li>
+</ul>
+</li>
+<li><strong>Markdown编辑器</strong>：支持Markdown的编辑器太多，功能也不完全一致，有的是用来进行基本的写作，有的是用来写代码的，有的甚至只是博客平台配套的编辑器。在这里放个Markdown编辑器的推荐链接：<a href="https://github.com/wizardforcel/markdown-simple-world/blob/master/1.md" target="_blank" rel="noopener">Markdown编辑器</a>，大家根据自己的喜好选择吧！　博主本人选择的是windows的<a href="http://markdownpad.com/" target="_blank" rel="noopener">MarkdownPad</a></li>
+</ul>
+<a id="more"></a>
+</blockquote>
+<h2 id="2-快捷键"><a href="#2-快捷键" class="headerlink" title="2.快捷键"></a>2.快捷键</h2><p><img src="https://i.imgur.com/vp71QsV.png" alt="快捷键"></p>
+<h2 id="3-基本语法"><a href="#3-基本语法" class="headerlink" title="3.基本语法"></a>3.基本语法</h2><h3 id="3-1-标题"><a href="#3-1-标题" class="headerlink" title="3.1 标题"></a>3.1 标题</h3><blockquote>
+<ul>
+<li>标题是每篇文章都需要也是最常用的格式，在 Markdown 中，如果一段文字被定义为标题，只要在这段文字前加 # 号即可：<br><strong># 一级标题</strong><br><strong>## 二级标题</strong><br><strong>### 三级标题</strong><br>以此类推，总共六级标题，建议在井号后加一个空格，这是最标准的 Markdown 语法。</li>
+</ul>
+</blockquote>
+<h3 id="3-2-段落与换行"><a href="#3-2-段落与换行" class="headerlink" title="3.2 段落与换行"></a>3.2 段落与换行</h3><blockquote>
+<ul>
+<li>段落前后必须是空行  </li>
+</ul>
+<ul>
+<li>如果需要在段落内加入换行，可以在前一行的末尾<strong>加入至少两个空格然后换行</strong>写其它的文字，或者直接在其间加上&lt;\br>。</li>
+</ul>
+</blockquote>
+<h3 id="3-3-引用"><a href="#3-3-引用" class="headerlink" title="3.3 引用"></a>3.3 引用</h3><blockquote>
+<ul>
+<li>在段落或其他内容前使用 &gt; 符号，就可以将这段内容标记为 ‘引用’ 的内容(&lt;\blockquote>):<strong>“>引用内容”</strong> </li>
+</ul>
+<ul>
+<li>嵌套引用：<strong>即在引用中使用&gt;&gt;符号，表示嵌套引用。</strong><br></li>
+</ul>
+<ul>
+<li>其他：<strong>在引用中可以使用其他任何Markdown语法。</strong></li>
+</ul>
+</blockquote>
+<h3 id="3-4-列表"><a href="#3-4-列表" class="headerlink" title="3.4 列表"></a>3.4 列表</h3><blockquote>
+<ul>
+<li><strong>无序列表</strong>：使用<strong>-</strong> <strong>+</strong> *三个任意一个作为开头标记。  </li>
+</ul>
+<ul>
+<li><strong>有序列表</strong>：以数字和 ‘ <strong>.</strong> ’作为开头标记。 </li>
+</ul>
+<ul>
+<li><strong>嵌套的列表</strong>：无序列表和有序列表可以随意相互嵌套。  </li>
+</ul>
+</blockquote>
+<h3 id="3-5-代码"><a href="#3-5-代码" class="headerlink" title="3.5 代码"></a>3.5 代码</h3><p>对于程序员来说这是个必不可少的功能，插入程序代码的方式有两种，1.使用缩进（Tab）2.或者(`)符号(Tab 键上边、数字 1 键左侧的那个按键）将代码包裹起来。<br></p>
+<blockquote>
+<ul>
+<li><strong>代码块</strong>：Tab缩进  </li>
+</ul>
+<ul>
+<li><strong>行内式</strong>：如果在某个行内需要引用到短句代码，就不必使用    Tab缩进大费周章了，只需要用方式2将代码括起来就好了。  </li>
+</ul>
+<ul>
+<li><strong>代码块里面包含html代码</strong> :在代码区块里面， &amp; 、 &lt; 和 &gt; 会自动转成 HTML 实体，这样的方式让你非常容易使用 Markdown 插入范例用的 HTML 原始码，只需要复制贴上，剩下的 Markdown 都会帮你处理。  </li>
+</ul>
+</blockquote>
+<h3 id="3-6-分割线"><a href="#3-6-分割线" class="headerlink" title="3.6 分割线"></a>3.6 分割线</h3><p>可以在一行中使用三个或者更多的*， -或_来添加分割线</p>
+<blockquote>
+<ul>
+<li>*** </li>
+</ul>
+<ul>
+<li>-–  </li>
+</ul>
+<ul>
+<li>__  </li>
+</ul>
+</blockquote>
+<h3 id="3-7-超链接"><a href="#3-7-超链接" class="headerlink" title="3.7 超链接"></a>3.7 超链接</h3><blockquote>
+<ul>
+<li><strong>行内式</strong>：  </li>
+</ul>
+</blockquote>
+<p>   1.普通链接:      </p>
+<pre><code>[Google](http://www.google.com/)  
+</code></pre><p>效果为：<a href="http://www.google.com/" target="_blank" rel="noopener">Google</a><br>2.包含title的链接:  </p>
+<pre><code>[Google](http://www.google.com/ &quot;Google&quot;)
+</code></pre><p> 效果为：<a href="http://www.google.com/" title="Google" target="_blank" rel="noopener">Google</a>  </p>
+<blockquote>
+<ul>
+<li><strong>参考式</strong>：<br>参考式链接的写法相当于行内式拆分成两部分，并通过一个 识别符 来连接两部分。参考式能尽量保持文章结构的简单，也方便统一管理 URL。<br>格式如下：   </li>
+</ul>
+</blockquote>
+<pre><code>[Google][link]  
+[link]: http://www.google.com/ &quot;Google&quot;   
+</code></pre><blockquote>
+<p>链接内容的定义可以放在同一个文件的 任意位置。  </p>
+<ul>
+<li><strong>自动链接</strong>：<br>使用 &lt;&gt; 包括的 URL 或邮箱地址会被自动转换为超链接：  </li>
+</ul>
+</blockquote>
+<pre><code>&lt;http://www.google.com/&gt;
+</code></pre><h3 id="3-8-图片"><a href="#3-8-图片" class="headerlink" title="3.8 图片"></a>3.8 图片</h3><p>插入图片的语法和插入超链接的语法基本一致，只是在最前面多一个 !。也分为行内式和参考式两种。</p>
+<blockquote>
+<ul>
+<li><strong>行内式</strong>：  </li>
+</ul>
+</blockquote>
+<pre><code>![ ](https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg)  
+</code></pre><p>   (胡乱放的图….)<br><img src="https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg" alt></p>
+<blockquote>
+<ul>
+<li><strong>参考式</strong>：  </li>
+</ul>
+</blockquote>
+<pre><code>![ ][link1]  
+[link1]:https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg  
+</code></pre><blockquote>
+<ul>
+<li><strong>指定图片大小</strong>：  </li>
+</ul>
+</blockquote>
+<p>Markdown 不支持指定图片的显示大小，不过可以通过直接插入<img>标签来指定相关属性：  </p>
+<pre><code>&lt;img src=&quot;https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg&quot; width=&quot;300&quot; height=&quot;200&quot;&gt;
+</code></pre><p><img src="https://ws1.sinaimg.cn/large/93ef9e7bly1fypwmu4p2hj21hc0u016j.jpg" width="300" height="200">  </p>
+<h3 id="3-9-字符转义"><a href="#3-9-字符转义" class="headerlink" title="3.9 字符转义"></a>3.9 字符转义</h3><blockquote>
+<p>反斜线（\）用于插入在 Markdown 语法中有特殊作用的字符，用于屏蔽该字符的特殊作用。  </p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>这是我第一次写博客，也是第一次学习Markdown语法，学了什么我就写点什么，不为了什么，巩固学习肯定要实践一下的，写下来也好备忘。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Markdown/" rel="tag"># Markdown</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/29/你好，我是霹雳大乌龙/" rel="next" title="你好，我是霹雳大乌龙">
+                <i class="fa fa-chevron-left"></i> 你好，我是霹雳大乌龙
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/07/Altium Designer 18 元件封装/" rel="prev" title="Altium Designer 18 元件封装">
+                Altium Designer 18 元件封装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#写博客，你需要了解下Markdown基本语法"><span class="nav-number">1.</span> <span class="nav-text">写博客，你需要了解下Markdown基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-关于Markdown"><span class="nav-number">1.1.</span> <span class="nav-text">1.关于Markdown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-快捷键"><span class="nav-number">1.2.</span> <span class="nav-text">2.快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-基本语法"><span class="nav-number">1.3.</span> <span class="nav-text">3.基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-标题"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 标题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-段落与换行"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 段落与换行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-引用"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-列表"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-代码"><span class="nav-number">1.3.5.</span> <span class="nav-text">3.5 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-分割线"><span class="nav-number">1.3.6.</span> <span class="nav-text">3.6 分割线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-超链接"><span class="nav-number">1.3.7.</span> <span class="nav-text">3.7 超链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-图片"><span class="nav-number">1.3.8.</span> <span class="nav-text">3.8 图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-9-字符转义"><span class="nav-number">1.3.9.</span> <span class="nav-text">3.9 字符转义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

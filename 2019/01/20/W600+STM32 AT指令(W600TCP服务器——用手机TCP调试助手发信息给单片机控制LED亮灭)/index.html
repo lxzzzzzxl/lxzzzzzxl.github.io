@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言 好些天没有更新博客，是因为学习新知识去了，学习了如何用单片机发信息给W600模组，并利用W600的响应控制单片机上的LED的亮灭，下面把我学习的成果以及过程中遇到的一些问题记录下来，作为备忘，也分享给有需要的人。废话不多说，我们进入正题… 首先，我们需要梳理一下我们整个流程的思路：我们是通过单片机（STM32）的串口发送AT指令给wifi模块（这个是跟我们前面用串口调试助手是一个性质的）；紧">
+<meta name="keywords" content="STM32,W600,WiFi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="前言 好些天没有更新博客，是因为学习新知识去了，学习了如何用单片机发信息给W600模组，并利用W600的响应控制单片机上的LED的亮灭，下面把我学习的成果以及过程中遇到的一些问题记录下来，作为备忘，也分享给有需要的人。废话不多说，我们进入正题… 首先，我们需要梳理一下我们整个流程的思路：我们是通过单片机（STM32）的串口发送AT指令给wifi模块（这个是跟我们前面用串口调试助手是一个性质的）；紧">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-28T10:16:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)">
+<meta name="twitter:description" content="前言 好些天没有更新博客，是因为学习新知识去了，学习了如何用单片机发信息给W600模组，并利用W600的响应控制单片机上的LED的亮灭，下面把我学习的成果以及过程中遇到的一些问题记录下来，作为备忘，也分享给有需要的人。废话不多说，我们进入正题… 首先，我们需要梳理一下我们整个流程的思路：我们是通过单片机（STM32）的串口发送AT指令给wifi模块（这个是跟我们前面用串口调试助手是一个性质的）；紧">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭) | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-20 15:59:39" itemprop="dateCreated datePublished" datetime="2019-01-20T15:59:39+08:00">2019-01-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-28 18:16:52" itemprop="dateModified" datetime="2019-01-28T18:16:52+08:00">2019-01-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/" itemprop="url" rel="index"><span itemprop="name">W600</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/WiFi/" itemprop="url" rel="index"><span itemprop="name">WiFi</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/WiFi/STM32/" itemprop="url" rel="index"><span itemprop="name">STM32</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/W600/WiFi/STM32/AT开发/" itemprop="url" rel="index"><span itemprop="name">AT开发</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/" class="leancloud_visitors" data-flag-title="W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p> 好些天没有更新博客，是因为学习新知识去了，学习了如何用单片机发信息给W600模组，并利用W600的响应控制单片机上的LED的亮灭，下面把我学习的成果以及过程中遇到的一些问题记录下来，作为备忘，也分享给有需要的人。废话不多说，我们进入正题…<br> 首先，我们需要梳理一下我们整个流程的思路：我们是通过单片机（STM32）的串口发送AT指令给wifi模块（这个是跟我们前面用串口调试助手是一个性质的）；紧接着，我们同样需要利用串口接收wifi模块返回的响应信息，对响应的信息进行判断，做出正确的反应。<br> 整个流程大致可以归纳为以上的那么一段话，接下来我们就根据具体代码来仔细讲解，代码不复杂，我写代码都是怎么简单怎么来，所以相信大家都可以看的懂。<br><a id="more"></a></p>
+<h1 id="代码讲解"><a href="#代码讲解" class="headerlink" title="代码讲解"></a>代码讲解</h1><h2 id="串口初始化"><a href="#串口初始化" class="headerlink" title="串口初始化"></a>串口初始化</h2><p> 用的是串口2收发信息，硬件上将串口2的TX,RX跟模组的RX,TX连接，下面贴上代码:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">u8 USART2_RX_BUF[USART2_REC_LEN];  <span class="comment">//定义接收缓存数组(串口接受的数据存储在数组里)</span></span><br><span class="line">u16 USART2_RX_STA=<span class="number">0</span>; </span><br><span class="line"><span class="keyword">int</span> flag=<span class="number">0</span>;  <span class="comment">//串口接收标志位</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">W600_USART_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">GPIO_InitTypeDef GPIO_InitStrue;     <span class="comment">//结构体定义</span></span><br><span class="line">USART_InitTypeDef USART_InitStrue;</span><br><span class="line">NVIC_InitTypeDef NVIC_InitStrue;</span><br><span class="line"></span><br><span class="line">RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);  <span class="comment">//使能串口2，GPIOA时钟 </span></span><br><span class="line">RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE); </span><br><span class="line"><span class="comment">//GPIOA初始化</span></span><br><span class="line">GPIO_InitStrue.GPIO_Pin = GPIO_Pin_2;          <span class="comment">//USART2_TX	    PA.2</span></span><br><span class="line">   GPIO_InitStrue.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">   GPIO_InitStrue.GPIO_Mode = GPIO_Mode_AF_PP;	   <span class="comment">//复用推挽输出</span></span><br><span class="line">   GPIO_Init(GPIOA, &amp;GPIO_InitStrue);             <span class="comment">//初始化PA2</span></span><br><span class="line">    </span><br><span class="line">   GPIO_InitStrue.GPIO_Pin = GPIO_Pin_3;             <span class="comment">//USART2_RX	  PA.3</span></span><br><span class="line">   GPIO_InitStrue.GPIO_Mode = GPIO_Mode_IN_FLOATING; <span class="comment">//浮空输入</span></span><br><span class="line">   GPIO_Init(GPIOA, &amp;GPIO_InitStrue);                <span class="comment">//初始化PA3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//USART初始化</span></span><br><span class="line">USART_InitStrue.USART_BaudRate = <span class="number">115200</span>;<span class="comment">//波特率</span></span><br><span class="line">USART_InitStrue.USART_WordLength = USART_WordLength_8b;<span class="comment">//字长为8位数据格式</span></span><br><span class="line">USART_InitStrue.USART_StopBits = USART_StopBits_1;<span class="comment">//一个停止位</span></span><br><span class="line">USART_InitStrue.USART_Parity = USART_Parity_No;<span class="comment">//无奇偶校验位</span></span><br><span class="line">USART_InitStrue.USART_HardwareFlowControl = USART_HardwareFlowControl_None;<span class="comment">//无硬件数据流控制</span></span><br><span class="line">USART_InitStrue.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	<span class="comment">//收发模式</span></span><br><span class="line">USART_Init(USART2, &amp;USART_InitStrue); <span class="comment">//初始化串口</span></span><br><span class="line"></span><br><span class="line">NVIC_InitStrue.NVIC_IRQChannel = USART2_IRQn;</span><br><span class="line">NVIC_InitStrue.NVIC_IRQChannelPreemptionPriority=<span class="number">3</span> ;<span class="comment">//抢占优先级3</span></span><br><span class="line">NVIC_InitStrue.NVIC_IRQChannelSubPriority = <span class="number">3</span>;		<span class="comment">//子优先级3</span></span><br><span class="line">NVIC_InitStrue.NVIC_IRQChannelCmd = ENABLE;			<span class="comment">//IRQ通道使能</span></span><br><span class="line">NVIC_Init(&amp;NVIC_InitStrue);	<span class="comment">//根据指定的参数初始化VIC寄存器</span></span><br><span class="line">USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);<span class="comment">//开启中断</span></span><br><span class="line"></span><br><span class="line">USART_Cmd(USART2,ENABLE);   <span class="comment">//使能串口</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//*************************串口2中断服务函数*********************************//</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">USART2_IRQHandler</span><span class="params">(<span class="keyword">void</span>)</span>                	<span class="comment">//串口2中断服务程序</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">if</span>(USART_GetITStatus(USART2, USART_IT_RXNE)!=RESET)  </span><br><span class="line">	&#123;  </span><br><span class="line">		 flag=<span class="number">1</span>;</span><br><span class="line">	   USART2_RX_BUF[USART2_RX_STA++]=USART_ReceiveData(USART2);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> 上面这段代码没什么特别的，就是串口的初始化，重点看一下中断服务函数，我们的信息接收是在中断中进行的，原本用的是正点原子的，但是却一直收不到数据，弄了很久才发现问题在于原子定义的协议，协议规定了接收到回车换行代表数据接收完成，但恰恰我用的wifi模块返回的信息是回车换行开头的……，所以我修改成没有任何协议，只要接收到数据就统统存储到前面定义的数组中。  </p>
+<h2 id="WiFi模块初始化"><a href="#WiFi模块初始化" class="headerlink" title="WiFi模块初始化"></a>WiFi模块初始化</h2><p> 说是模块的初始化，实际上模块没有什么要初始化的，硬件连接上去就可以收发数据，我们在这里做的就是编写单片机发送AT指令给模块配置AP模式的函数，直接贴代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//*******************预定义字符串*****************************//</span></span><br><span class="line"><span class="keyword">char</span> w600_rst[]=<span class="string">"AT+RST\r\n"</span>; <span class="comment">//复位指令</span></span><br><span class="line"><span class="keyword">char</span> w600_at[]=<span class="string">"AT\r\n"</span>; <span class="comment">//握手连接指令</span></span><br><span class="line"><span class="keyword">char</span> w600_cwmode1[]=<span class="string">"AT+CWMODE=1\r\n"</span>; <span class="comment">//设置w600工作模式为STA </span></span><br><span class="line"><span class="keyword">char</span> w600_cwmode2[]=<span class="string">"AT+CWMODE=2\r\n"</span>; <span class="comment">//设置w600工作模式为AP </span></span><br><span class="line"><span class="keyword">char</span> w600_cwjap[]=<span class="string">"AT+CWJAP=\"USER_1A383A\",\"00000000\"\r\n"</span>; <span class="comment">//设置要加入的AP参数 </span></span><br><span class="line"><span class="keyword">char</span> w600_cwsap[]=<span class="string">"AT+CWSAP=\"lxz\",\"lxz333333\",5,3\r\n"</span>; <span class="comment">//设置要创建的AP参数</span></span><br><span class="line"><span class="keyword">char</span> w600_cipmux[]=<span class="string">"AT+CIPMUX=1\r\n"</span>; <span class="comment">//使能多链接 </span></span><br><span class="line"><span class="keyword">char</span> w600_cipserver[]=<span class="string">"AT+CIPSERVER=1,6000\r\n"</span>; <span class="comment">//创建服务器</span></span><br><span class="line"><span class="keyword">char</span> w600_return[]=<span class="string">"OK\r\n"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//*******************字符串发送函数*****************************//</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">USART_SendString</span><span class="params">(USART_TypeDef* USARTx,<span class="keyword">char</span> *str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(*str!=<span class="string">'\0'</span>)</span><br><span class="line">	&#123; </span><br><span class="line">	<span class="keyword">while</span>(USART_GetFlagStatus(USARTx,USART_FLAG_TC )==RESET);	</span><br><span class="line">	USART_SendData(USARTx,*str);</span><br><span class="line">	str++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//*************************数组清空函数**************************//</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Data_Clear</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">600</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">	USART2_RX_BUF[i]=<span class="number">0</span>;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//*************************返回信息比较函数************************//</span></span><br><span class="line"> Data_Compare(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">int</span> strx=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">600</span>;i++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span>((USART2_RX_BUF[i]==<span class="string">'O'</span>)&amp;&amp;(USART2_RX_BUF[i+<span class="number">1</span>]==<span class="string">'K'</span>))</span><br><span class="line">&#123;</span><br><span class="line">  strx=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> strx;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">u8 <span class="title">Data_Compare1</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">int</span> strx=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">600</span>;i++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span>((USART2_RX_BUF[i]==<span class="string">'S'</span>)&amp;&amp;(USART2_RX_BUF[i+<span class="number">1</span>]==<span class="string">'T'</span>))</span><br><span class="line">&#123;</span><br><span class="line">  strx=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> strx;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">u8 <span class="title">Data_Compare2</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">int</span> strx=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">600</span>;i++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span>((USART2_RX_BUF[i]==<span class="string">'O'</span>)&amp;&amp;(USART2_RX_BUF[i+<span class="number">1</span>]==<span class="string">'N'</span>))</span><br><span class="line">&#123;</span><br><span class="line">  strx=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> strx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//***************************W600初始化**************************//</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">W600_wifi_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">USART_SendString(USART2, w600_at);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare()==<span class="number">1</span>) <span class="keyword">break</span>;		     </span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line">WLED1=<span class="number">1</span>;</span><br><span class="line">delay_ms(<span class="number">500</span>);</span><br><span class="line">USART_SendString(USART2, w600_cwmode2);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare()==<span class="number">1</span>) <span class="keyword">break</span>;	</span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line">WLED1=<span class="number">0</span>;</span><br><span class="line">delay_ms(<span class="number">500</span>);</span><br><span class="line">USART_SendString(USART2, w600_cwsap);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare()==<span class="number">1</span>) <span class="keyword">break</span>;	</span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line">WLED1=<span class="number">1</span>;</span><br><span class="line">delay_ms(<span class="number">500</span>);</span><br><span class="line">USART_SendString(USART2, w600_cipmux);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare()==<span class="number">1</span>) <span class="keyword">break</span>;	</span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line">WLED1=<span class="number">0</span>;</span><br><span class="line">delay_ms(<span class="number">500</span>);</span><br><span class="line">USART_SendString(USART2, w600_cipserver);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare()==<span class="number">1</span>) <span class="keyword">break</span>;		</span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line">WLED1=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面这段代码有几个函数我们讲解一下，首先是数组清空函数<strong>void Data_Clear(void)</strong>，这个函数的作用是清空每一次我们接收的内容，为了下一次接收新的数据做准备，避免出错；还有一个就是返回信息比较函数<strong>Data_Compare(void)</strong>，因为我们每一次发送AT指令，模块都会返回响应信息，我们需要判断是否接收到正确的信息来确定是否发送新的AT指令；最后一个就是系列指令发送的函数了<strong>void W600_wifi_init(void)</strong>，这个函数我们通过系列指令来配置AP模式，使能多链接以及确定端口号…每发送一个指令，判断一次返回信息，这里还用LED亮灭来辅助观察，相信大家看代码是可以看的懂的。  </p>
+<h2 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h2><p>下面我们看看主函数<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;		</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line">delay_init();	    	 <span class="comment">//延时函数初始化	  </span></span><br><span class="line">NVIC_Configuration(); 	 <span class="comment">//设置NVIC中断分组2:2位抢占优先级，2位响应优先级</span></span><br><span class="line">uart_init(<span class="number">9600</span>);	 <span class="comment">//串口初始化为9600</span></span><br><span class="line">KEY_Init(); </span><br><span class="line">LED_Init();</span><br><span class="line">W600_USART_init();</span><br><span class="line">W600_wifi_init();</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare1()==<span class="number">1</span>) <span class="keyword">break</span>;		</span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span>(Data_Compare2()==<span class="number">1</span>) <span class="keyword">break</span>;		</span><br><span class="line">&#125;</span><br><span class="line">Data_Clear();</span><br><span class="line">flag =<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line"> &#123;</span><br><span class="line">	 <span class="keyword">if</span>(flag == <span class="number">1</span>)&#123;</span><br><span class="line">		 flag =<span class="number">0</span>;</span><br><span class="line">		 <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">600</span>;i++)&#123;</span><br><span class="line">			 <span class="keyword">if</span>(USART2_RX_BUF[i]==<span class="string">'1'</span>  &amp;&amp; USART2_RX_BUF[i+<span class="number">1</span>]==<span class="string">':'</span>)</span><br><span class="line">      &#123;</span><br><span class="line">			 <span class="keyword">switch</span>(USART2_RX_BUF[i+<span class="number">2</span>])</span><br><span class="line">				 &#123;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">'O'</span>: WLED2=<span class="number">1</span>;</span><br><span class="line">                         <span class="keyword">break</span>;		 </span><br><span class="line">               <span class="keyword">case</span> <span class="string">'F'</span>: WLED2=<span class="number">0</span>;</span><br><span class="line">                         <span class="keyword">break</span>;</span><br><span class="line">							<span class="keyword">default</span>:  <span class="keyword">break</span>;      							 </span><br><span class="line">		  	 &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里头还用到了两个返回信息比较函数，因为我们手机连上热点和连接上对应端口，模块都会分别返回信息到串口，这里也要判断一下；最后我们再次讲解一下我们的串口中断服务函数，里头定义了每次接收到数据，标志位置1，前面我们不讲是因为我们没用到这个标志位，当我们手机TCP调试助手连接上模块后，我们的准备工作就算是做完了，这时将标志位置0，接下来就是等待发送亮灭等的信息了，这里我们定义循环接收信息，当发送亮灭等信号后串口接收到新的数据（也就是当标志位被置1），我们判断是要亮还是灭，然后做出正确响应。（亮时O，灭时F，这些都是我们自己可以定义修改的）。<br>好了，代码这样就讲解完了，大家实践试试吧，本片完结！！！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/STM32/" rel="tag"># STM32</a>
+          
+            <a href="/tags/W600/" rel="tag"># W600</a>
+          
+            <a href="/tags/WiFi/" rel="tag"># WiFi</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/13/W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯)/" rel="next" title="W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯)">
+                <i class="fa fa-chevron-left"></i> W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/22/Quartus II 13.1破解 注册/" rel="prev" title="Quartus II 13.1破解 注册">
+                Quartus II 13.1破解 注册 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码讲解"><span class="nav-number">2.</span> <span class="nav-text">代码讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#串口初始化"><span class="nav-number">2.1.</span> <span class="nav-text">串口初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WiFi模块初始化"><span class="nav-number">2.2.</span> <span class="nav-text">WiFi模块初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主函数"><span class="nav-number">2.3.</span> <span class="nav-text">主函数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言 回顾一下服务器端套接字的实现流程，第一步是调用socket函数创建套接字，这个函数我们在上一篇博客已经详细讲解了；第二步则是调用bind函数分配IP地址及端口号，本篇博客就来讲讲bind函数的具体实现。">
+<meta name="keywords" content="套接字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP&#x2F;IP网络编程 —— 向套接字分配网络地址">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/03/21/TCP IP网络编程 —— 向套接字分配网络地址/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="前言 回顾一下服务器端套接字的实现流程，第一步是调用socket函数创建套接字，这个函数我们在上一篇博客已经详细讲解了；第二步则是调用bind函数分配IP地址及端口号，本篇博客就来讲讲bind函数的具体实现。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-23T11:51:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TCP&#x2F;IP网络编程 —— 向套接字分配网络地址">
+<meta name="twitter:description" content="前言 回顾一下服务器端套接字的实现流程，第一步是调用socket函数创建套接字，这个函数我们在上一篇博客已经详细讲解了；第二步则是调用bind函数分配IP地址及端口号，本篇博客就来讲讲bind函数的具体实现。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/03/21/TCP IP网络编程 —— 向套接字分配网络地址/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TCP/IP网络编程 —— 向套接字分配网络地址 | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/03/21/TCP IP网络编程 —— 向套接字分配网络地址/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TCP/IP网络编程 —— 向套接字分配网络地址
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 21:20:19" itemprop="dateCreated datePublished" datetime="2019-03-21T21:20:19+08:00">2019-03-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-23 19:51:26" itemprop="dateModified" datetime="2019-03-23T19:51:26+08:00">2019-03-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/网络编程/" itemprop="url" rel="index"><span itemprop="name">网络编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/21/TCP IP网络编程 —— 向套接字分配网络地址/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/03/21/TCP IP网络编程 —— 向套接字分配网络地址/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/03/21/TCP IP网络编程 —— 向套接字分配网络地址/" class="leancloud_visitors" data-flag-title="TCP/IP网络编程 —— 向套接字分配网络地址">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p> 回顾一下服务器端套接字的实现流程，第一步是调用socket函数创建套接字，这个函数我们在上一篇博客已经详细讲解了；第二步则是调用bind函数分配IP地址及端口号，本篇博客就来讲讲bind函数的具体实现。</p>
+<a id="more"></a>  
+<h1 id="bind"><a href="#bind" class="headerlink" title="bind()"></a>bind()</h1><pre><code>#include &lt;sys/socket.h&gt;
+int bind(int sockfd, struct sockaddr *myaddr, socklen_t addrlen);
+    -&gt; 成功时返回0，失败时返回-1。
+    * sockfd        要分配地址信息（IP地址和端口号）的套接字文件描述符。
+    * myaddr        存有地址信息的结构体变量地址值。
+    * addrlen       第二个结构体变量的长度。
+</code></pre><p> 如果此函数调用成功，则将第二个参数指定的地址信息分配给第一个参数中的相应套接字。下面先看一个服务器端常见的套接字初始化过程：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> serv_sock;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">serv_addr</span>;</span></span><br><span class="line"><span class="keyword">char</span> *serv_port = <span class="string">"9190"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 创建服务器端套接字 */</span></span><br><span class="line">serv_sock = socket(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 地址信息初始化 */</span></span><br><span class="line"><span class="built_in">memset</span>(&amp;serv_addr, <span class="number">0</span>, <span class="keyword">sizeof</span>(serv_addr));</span><br><span class="line">serv_addr.sin_family = AF_INET;</span><br><span class="line">serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);</span><br><span class="line">serv_addr.sin_port = htons(atoi(serv_port));</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 分配地址信息 */</span></span><br><span class="line">bind(serv_sock, (struct sockaddr*)&amp;serv_addr, <span class="keyword">sizeof</span>(serv_addr));</span><br></pre></td></tr></table></figure></p>
+<p> 相信看完这段代码的你，对socket和bind函数的调用并不会有太大的疑问，但你可能对地址信息初始化部分以及bind函数参数是怎么来的会产生很大的困惑，没有关系，我们依旧慢慢道来。</p>
+<h2 id="地址信息的表示"><a href="#地址信息的表示" class="headerlink" title="地址信息的表示"></a>地址信息的表示</h2><p> 一般的，我们把要使用的IP地址和端口号以结构体的形式给出定义，这里用IPv4进行讲解，围绕该结构体讨论目标地址的表示方法：</p>
+<pre><code>表示IPv4地址的结构体：
+struct sockaddr_in
+{
+    sa_family        sin_family;        //地址族（Address Family）
+    uint6_t          sin_port;          //16位TCP/UDP端口号
+    struct in_addr   sin_addr;          //32位IP地址
+    char             sin_zero[8];       //不使用
+}；
+</code></pre><p> 该结构体中提到的另一个结构体in_addr定义如下，它用来存放32位IP地址：</p>
+<pre><code>struct in_addr
+{
+    In_addr_t        s_addr;            //32位IPv4地址
+}；
+</code></pre><p> 下面介绍以上两个结构体的成员变量~</p>
+<h3 id="结构体sockaddr-in的成员分析"><a href="#结构体sockaddr-in的成员分析" class="headerlink" title="结构体sockaddr_in的成员分析"></a>结构体sockaddr_in的成员分析</h3><h4 id="成员sin-family"><a href="#成员sin-family" class="headerlink" title="成员sin_family"></a>成员sin_family</h4><p> 每种协议族适用的地址族均不同。比如，IPv4使用4字节地址族，IPv6使用16字节地址族。</p>
+<pre><code>--------------------------------------------------------------
+地址族（Address Family）    |              含  义
+--------------------------------------------------------------
+    AF_INET                |         IPv4网络协议中使用的地址族
+    AF_INET6               |         IPv6网络协议中使用的地址族
+    AF_LOCAL               |     本地通信中采用的UNIX协议的地址族    
+--------------------------------------------------------------  
+</code></pre><h4 id="成员sin-port"><a href="#成员sin-port" class="headerlink" title="成员sin_port"></a>成员sin_port</h4><p> 该成员保存16位端口号（以网络字节序保存）。</p>
+<h4 id="成员sin-addr"><a href="#成员sin-addr" class="headerlink" title="成员sin_addr"></a>成员sin_addr</h4><p> 该成员保存32位IP地址信息（也是以网络字节序保存）。</p>
+<h4 id="成员sin-zero"><a href="#成员sin-zero" class="headerlink" title="成员sin_zero"></a>成员sin_zero</h4><p> 该成员无特殊含义，我们只要知道将其填充为0即可。</p>
+<h2 id="网络字节序与地址变换"><a href="#网络字节序与地址变换" class="headerlink" title="网络字节序与地址变换"></a>网络字节序与地址变换</h2><p> 上面我们讲到，结构体sockaddr_in的成员sin_port和sin_addr的数据是以网络字节序保存的，至于什么是网络字节序这里我不进行赘述，大家自行了解，我们只讲字节序的转换；下面介绍两个字节序转换的函数：htons()和htonl()</p>
+<ul>
+<li>htons/htonl中的h代表主机(host)字节序；</li>
+<li>htons/htonl中的n代表网络(network)字节序；</li>
+<li>s指的是short，l指的是long（Linux中long类型占用4字节）；</li>
+<li>htons用于端口号转换，htonl用于IP地址转换；</li>
+</ul>
+<h2 id="网络地址的初始化与分配"><a href="#网络地址的初始化与分配" class="headerlink" title="网络地址的初始化与分配"></a>网络地址的初始化与分配</h2><h3 id="将字符串信息转换为网络字节序的整型数"><a href="#将字符串信息转换为网络字节序的整型数" class="headerlink" title="将字符串信息转换为网络字节序的整型数"></a>将字符串信息转换为网络字节序的整型数</h3><p> 由于sockaddr_in结构体中保存的地址信息的成员为32位整型数，而我们熟悉的IP地址的表示是点分十进制的表示法。因此，在分配IP的时候，需将其表示为32位整型数，下面同样介绍两个函数，它们可以帮助我们将字符串形式的IP地址转换成32位整型数据，且它们在转换类型的同时能够进行网络字节序的转换：</p>
+<pre><code>#include &lt;arpa/inet.h&gt;
+in_addr_t inet_addr(const char *string);
+    -&gt;成功时返回32位大端序整数型值，失败时返回INADDR_NONE。
+</code></pre><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">调用inet_addr函数的demo：</span><br><span class="line"><span class="comment">/* inet_addr.c */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> *addr1=<span class="string">"1.2.3.4"</span>;</span><br><span class="line">	<span class="keyword">char</span> *addr2=<span class="string">"1.2.3.256"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> conv_addr=inet_addr(addr1);</span><br><span class="line">	<span class="keyword">if</span>(conv_addr==INADDR_NONE)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Error occured! \n"</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Network ordered integer addr: %#lx \n"</span>, conv_addr);</span><br><span class="line">	</span><br><span class="line">	conv_addr=inet_addr(addr2);</span><br><span class="line">	<span class="keyword">if</span>(conv_addr==INADDR_NONE)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Error occured! \n"</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Network ordered integer addr: %#lx \n"</span>, conv_addr);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>#include &lt;arpa/inet.h&gt;
+int inet_aton(const char *string, struct in_addr *addr);
+    -&gt;成功时返回1（true），失败时返回0（false）。
+    * string            含有需转换的IP地址信息的字符串地址值。
+    * addr              将保存转换结果的in_addr结构体变量的地址值。
+</code></pre><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">调用inet_aton函数的demo：</span><br><span class="line"><span class="comment">/* inet_aton.c */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">error_handling</span><span class="params">(<span class="keyword">char</span> *message)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> *addr=<span class="string">"127.232.124.79"</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">addr_inet</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(!inet_aton(addr,&amp;addr_inet.sin_addr))</span><br><span class="line">		error_handling(<span class="string">"Conversion error"</span>);</span><br><span class="line">	<span class="keyword">else</span> </span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Network ordered integer addr: %#x \n"</span>, addr_inet.sin_addr.s_addr);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">error_handling</span><span class="params">(<span class="keyword">char</span> *message)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">fputs</span>(message,<span class="built_in">stderr</span>);</span><br><span class="line">	fputc(<span class="string">'\n'</span>, <span class="built_in">stderr</span>);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 上面这两个函数的区别在于，若要调用inet_addr函数，需要将转换后的IP地址信息代入sockaddr_in结构体中声明的in_addr结构体变量；而inet_aton函数则不需要此过程，因为传递in_addr结构体变量地址值时，函数会自动把结果传入该结构体变量，因此第二个函数的使用频率更高。</p>
+<p> 再补充一个与inet_aton函数正好相反的函数，此函数可以把网络字节序的整数型IP地址转换为我们熟悉的字符串形式：</p>
+<pre><code>#include &lt;arpa/inet.h&gt;
+char *inet_ntoa(struct in_addr adr);
+    -&gt;成功时返回转换的字符串地址值，失败时返回-1。
+</code></pre><h2 id="总结回顾"><a href="#总结回顾" class="headerlink" title="总结回顾"></a>总结回顾</h2><p> 我们再回顾一下一开始的地址信息初始化代码：</p>
+<pre><code>/* 地址信息初始化1 */
+memset(&amp;serv_addr, 0, sizeof(serv_addr));
+serv_addr.sin_family = AF_INET;
+serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+serv_addr.sin_port = htons(atoi(serv_port));
+</code></pre><p> 再看另一种初始化方法：</p>
+<pre><code>/* 地址信息初始化2 */
+memset(&amp;serv_addr, 0, sizeof(serv_addr));
+serv_addr.sin_family = AF_INET;
+serv_addr.sin_addr.s_addr = inet_addr(serv_ip);
+serv_addr.sin_port = htons(atoi(serv_port));
+</code></pre><p> 经过前面讲解的知识铺垫，我们一句一句来解释地址信息初始化的代码。</p>
+<pre><code>1. memset(&amp;serv_addr, 0, sizeof(serv_addr));    //将每个字节初始化为0，在这里也就是将sin_zero初始化为0
+2. serv_addr.sin_family = AF_INET;              //显而易见，通俗易懂
+3. serv_addr.sin_port = htons(atoi(serv_port)); //atoi函数把字符串类型的值转换成整数型
+
+最后看有差异的第三句，inet_addr(serv_ip)相信大家都好理解，我们主要看htonl(INADDR_ANY)，这是个什么格式？
+原来，使用inet_addr(serv_ip)，每次都要输入IP地址会有些繁琐，所以可以利用常数INADDR_ANY分配服务器端的IP地址，
+若采用这种方式，则可自动获取运行服务器端的计算机的IP地址，不必亲自输入。因此，服务器端中优先考虑第二种，而客户端
+一般不会采用。
+</code></pre><p> 好啦，讲完啦，白白~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/套接字/" rel="tag"># 套接字</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/21/TCP IP网络编程 —— 套接字类型与协议设置/" rel="next" title="TCP/IP网络编程 —— 套接字类型与协议设置">
+                <i class="fa fa-chevron-left"></i> TCP/IP网络编程 —— 套接字类型与协议设置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/23/TCP IP网络编程 —— 基于TCP的服务器端 客户端/" rel="prev" title="TCP/IP网络编程 —— 基于TCP的服务器端/客户端">
+                TCP/IP网络编程 —— 基于TCP的服务器端/客户端 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/93ef9e7bgy1fyye51utsuj20ci0cit9y.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bind"><span class="nav-number">2.</span> <span class="nav-text">bind()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#地址信息的表示"><span class="nav-number">2.1.</span> <span class="nav-text">地址信息的表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体sockaddr-in的成员分析"><span class="nav-number">2.1.1.</span> <span class="nav-text">结构体sockaddr_in的成员分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#成员sin-family"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">成员sin_family</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#成员sin-port"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">成员sin_port</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#成员sin-addr"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">成员sin_addr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#成员sin-zero"><span class="nav-number">2.1.1.4.</span> <span class="nav-text">成员sin_zero</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络字节序与地址变换"><span class="nav-number">2.2.</span> <span class="nav-text">网络字节序与地址变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络地址的初始化与分配"><span class="nav-number">2.3.</span> <span class="nav-text">网络地址的初始化与分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将字符串信息转换为网络字节序的整型数"><span class="nav-number">2.3.1.</span> <span class="nav-text">将字符串信息转换为网络字节序的整型数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结回顾"><span class="nav-number">2.4.</span> <span class="nav-text">总结回顾</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
