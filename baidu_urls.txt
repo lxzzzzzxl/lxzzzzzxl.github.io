@@ -1,7 +1,7 @@
 https://lxzzzzzxl.github.io/2019/10/10/C语言-返回数组/
-https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/
+https://lxzzzzzxl.github.io/2019/10/06/手把手教你实现基于RT-Thread的百度语音识别（三）/
+https://lxzzzzzxl.github.io/2019/10/05/手把手教你实现基于RT-Thread的百度语音识别（二）/
 https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/
-https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（三）/
 https://lxzzzzzxl.github.io/2019/05/02/RT-Thread学习笔记 —— 信号量/
 https://lxzzzzzxl.github.io/2019/04/28/RT-Thread学习笔记 —— UART串口/
 https://lxzzzzzxl.github.io/2019/04/28/RT-Thread学习笔记  —— 线程管理/
