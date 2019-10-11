@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="准备工作在本次实践开始之前，你必须确保你已经做了以下两件事：  注册百度开发者账号，并创建了一个语音识别应用，而且成功获取了Access Token（工程里将会用到）； 建立一个基于你自己的STM32平台的RT-Thread工程，它必须具备Finsh控制台，文件系统，网络功能（不明白的参见RT-Thread文档中心，网络功能推荐使用AT组件+ESP8266，因为这是最简单快捷的方法）。  如果上面">
+<meta name="keywords" content="STM32,百度语音,RT-Thread">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手把手教你实现基于RT-Thread的百度语音识别（二）">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="准备工作在本次实践开始之前，你必须确保你已经做了以下两件事：  注册百度开发者账号，并创建了一个语音识别应用，而且成功获取了Access Token（工程里将会用到）； 建立一个基于你自己的STM32平台的RT-Thread工程，它必须具备Finsh控制台，文件系统，网络功能（不明白的参见RT-Thread文档中心，网络功能推荐使用AT组件+ESP8266，因为这是最简单快捷的方法）。  如果上面">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/bdfc1e5c5e29b5d8.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/aa9765bde9fb096e.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/3b3f17044d530b3b.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/3298f9616fd1a0f9.jpg">
+<meta property="og:updated_time" content="2019-10-11T06:11:05.183Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="手把手教你实现基于RT-Thread的百度语音识别（二）">
+<meta name="twitter:description" content="准备工作在本次实践开始之前，你必须确保你已经做了以下两件事：  注册百度开发者账号，并创建了一个语音识别应用，而且成功获取了Access Token（工程里将会用到）； 建立一个基于你自己的STM32平台的RT-Thread工程，它必须具备Finsh控制台，文件系统，网络功能（不明白的参见RT-Thread文档中心，网络功能推荐使用AT组件+ESP8266，因为这是最简单快捷的方法）。  如果上面">
+<meta name="twitter:image" content="https://ftp.bmp.ovh/imgs/2019/10/bdfc1e5c5e29b5d8.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>手把手教你实现基于RT-Thread的百度语音识别（二） | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="http://ww1.sinaimg.cn/large/93ef9e7bly1g3vcnt99q9j20hs0dcwh6.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">手把手教你实现基于RT-Thread的百度语音识别（二）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-03 18:12:19" itemprop="dateCreated datePublished" datetime="2019-10-03T18:12:19+08:00">2019-10-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-11 14:11:05" itemprop="dateModified" datetime="2019-10-11T14:11:05+08:00">2019-10-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/语音识别/" itemprop="url" rel="index"><span itemprop="name">语音识别</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/" class="leancloud_visitors" data-flag-title="手把手教你实现基于RT-Thread的百度语音识别（二）">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>在本次实践开始之前，你必须确保你已经做了以下两件事：</p>
+<ol>
+<li>注册百度开发者账号，并创建了一个语音识别应用，而且成功获取了Access Token（工程里将会用到）；</li>
+<li>建立一个基于你自己的STM32平台的RT-Thread工程，它必须具备Finsh控制台，文件系统，网络功能（不明白的参见RT-Thread文档中心，网络功能推荐使用AT组件+ESP8266，因为这是最简单快捷的方法）。</li>
+</ol>
+<p>如果上面说的准备事项没有问题，那么请继续往下看：<br><br>这次我们将先跳过录音功能，而使用事先准备好的音频文件进行语音识别并控制板载RGB灯（上一篇的5，6点），所以你还需要准备一些音频文件，比如“红灯开”，“蓝灯关”。。。我是用手机录的音频，然后使用ffmpeg工具将音频转为百度语音官方认为最适合的16k采样率pcm文件，最后将这些音频文件放进sd卡中，我们的文件系统也是挂载在sd卡上的。</p>
+<h2 id="动手实践"><a href="#动手实践" class="headerlink" title="动手实践"></a>动手实践</h2><p>本次工程会用到RT-Thread的两个软件包：webclient和CJSON软件包，你需要使用ENV工具将这两个软件包添加进工程里。<br><br>好了，开始写代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;rtthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bd_speech_rcg.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; //网络功能需要的头文件</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;webclient.h&gt;  //webclient软件包头文件</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dfs_posix.h&gt;  //文件系统需要的头文件</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cJSON.h&gt;      //CJSON软件包头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 使用外设需要的头文件 */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;rtdevice.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;board.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 获取RGB灯对应的引脚编号 */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PIN_LED_R		GET_PIN(E,  7)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PIN_LED_G		GET_PIN(E,  8)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PIN_LED_B		GET_PIN(E,  9)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RES_BUFFER_SIZE     4096        <span class="comment">//数据接收数组大小</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HEADER_BUFFER_SIZE      2048    <span class="comment">//最大支持的头部长度</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* URL */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> POST_FILE_URL  <span class="meta-string">"http://vop.baidu.com/server_api?dev_pid=1536&amp;cuid=lxzzzzzxl&amp;token=25.9119f50a60602866be9288f1f14a1059.315360000.1884092937.282335-15525116"</span></span></span><br><span class="line"><span class="comment">/* 头部数据（必需） */</span></span><br><span class="line"><span class="keyword">char</span> *form_data = <span class="string">"audio/pcm;rate=16000"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 预定义的命令 */</span></span><br><span class="line"><span class="keyword">char</span> *cmd1 = <span class="string">"打开红灯"</span>;</span><br><span class="line"><span class="keyword">char</span> *cmd2 = <span class="string">"关闭红灯"</span>;</span><br><span class="line"><span class="keyword">char</span> *cmd3 = <span class="string">"打开蓝灯"</span>;</span><br><span class="line"><span class="keyword">char</span> *cmd4 = <span class="string">"关闭蓝灯"</span>;</span><br><span class="line"><span class="keyword">char</span> *cmd5 = <span class="string">"打开绿灯"</span>;</span><br><span class="line"><span class="keyword">char</span> *cmd6 = <span class="string">"关闭绿灯"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/************************************************</span></span><br><span class="line"><span class="comment">函数名称 ： bd</span></span><br><span class="line"><span class="comment">功    能 ： 将音频文件发送到百度语音服务器，并接收响应数据</span></span><br><span class="line"><span class="comment">参    数 ： 音频文件名（注意在文件系统中的位置，默认根目录）</span></span><br><span class="line"><span class="comment">返 回 值 ： void</span></span><br><span class="line"><span class="comment">作    者 ： rtthread；霹雳大乌龙</span></span><br><span class="line"><span class="comment">*************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bd</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;	</span><br><span class="line">	<span class="keyword">char</span> *filename = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> *buffer = RT_NULL;</span><br><span class="line">	<span class="keyword">int</span> content_length = <span class="number">-1</span>, bytes_read = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> content_pos = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/* 判断命令是否合法 */</span></span><br><span class="line">	<span class="keyword">if</span>(argc != <span class="number">2</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		rt_kprintf(<span class="string">"bd &lt;filename&gt;\r\n"</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/* 获取音频文件名 */</span></span><br><span class="line">	filename = argv[<span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">    <span class="comment">/* 以只读方式打开音频文件 */</span></span><br><span class="line">	<span class="keyword">int</span> fd = open(filename, O_RDONLY, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span>(fd &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		rt_kprintf(<span class="string">"open %d fail!\r\n"</span>, filename);</span><br><span class="line">		<span class="keyword">goto</span> __exit;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/* 获取音频文件大小 */</span></span><br><span class="line">	<span class="keyword">size_t</span> length = lseek(fd, <span class="number">0</span>, SEEK_END);</span><br><span class="line">	lseek(fd, <span class="number">0</span>, SEEK_SET);</span><br><span class="line">	</span><br><span class="line">    <span class="comment">/* 创建响应数据接收数据 */</span></span><br><span class="line">	buffer = (<span class="keyword">unsigned</span> <span class="keyword">char</span> *) web_malloc(RES_BUFFER_SIZE);</span><br><span class="line">	<span class="keyword">if</span>(buffer == RT_NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		rt_kprintf(<span class="string">"no memory for receive response buffer.\n"</span>);</span><br><span class="line">        ret = -RT_ENOMEM;</span><br><span class="line">		<span class="keyword">goto</span> __exit;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/* 创建会话 */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">webclient_session</span> *<span class="title">session</span> = <span class="title">webclient_session_create</span>(<span class="title">HEADER_BUFFER_SIZE</span>);</span></span><br><span class="line">	<span class="keyword">if</span>(session == RT_NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		ret = -RT_ENOMEM;</span><br><span class="line">		<span class="keyword">goto</span> __exit;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 拼接头部数据 */</span></span><br><span class="line">	webclient_header_fields_add(session, <span class="string">"Content-Length: %d\r\n"</span>, length);</span><br><span class="line">	webclient_header_fields_add(session, <span class="string">"Content-Type: %s\r\n"</span>, form_data);</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 发送POST请求 */</span></span><br><span class="line">	<span class="keyword">int</span> rc = webclient_post(session, POST_FILE_URL, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="keyword">if</span>(rc &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		rt_kprintf(<span class="string">"webclient post data error!\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> __exit;</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span> (rc == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        rt_kprintf(<span class="string">"webclient connected and send header msg!\n"</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        rt_kprintf(<span class="string">"rc code: %d!\n"</span>, rc);</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		rt_memset(buffer, <span class="number">0</span>, RES_BUFFER_SIZE);</span><br><span class="line">		length = read(fd, buffer, RES_BUFFER_SIZE);</span><br><span class="line">		<span class="keyword">if</span>(length &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		ret = webclient_write(session, buffer, length);</span><br><span class="line">		<span class="keyword">if</span>(ret &lt; <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			rt_kprintf(<span class="string">"webclient write error!\r\n"</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;	</span><br><span class="line">		rt_thread_mdelay(<span class="number">100</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	close(fd);</span><br><span class="line">	rt_kprintf(<span class="string">"Upload voice data successfully\r\n"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(webclient_handle_response(session) != <span class="number">200</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        rt_kprintf(<span class="string">"get handle resposne error!"</span>);</span><br><span class="line">        <span class="keyword">goto</span> __exit;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 获取接收的响应数据长度 */</span></span><br><span class="line">	content_length = webclient_content_length_get(session);</span><br><span class="line">	rt_thread_delay(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		bytes_read = webclient_read(session, buffer, <span class="number">1024</span>);</span><br><span class="line">        <span class="keyword">if</span> (bytes_read &lt;= <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; bytes_read; index++)</span><br><span class="line">		&#123;</span><br><span class="line">			rt_kprintf(<span class="string">"%c"</span>, buffer[index]);</span><br><span class="line">		&#125;</span><br><span class="line">        </span><br><span class="line">        content_pos += bytes_read;</span><br><span class="line">		&#125;<span class="keyword">while</span>(content_pos &lt; content_length);	</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 解析json数据 */</span></span><br><span class="line">	bd_data_parse(buffer);</span><br><span class="line">	</span><br><span class="line">	__exit:</span><br><span class="line">				<span class="keyword">if</span>(fd &gt;= <span class="number">0</span>)</span><br><span class="line">					close(fd);</span><br><span class="line">				<span class="keyword">if</span>(session != <span class="literal">NULL</span>)</span><br><span class="line">					webclient_close(session);</span><br><span class="line">				<span class="keyword">if</span>(buffer != <span class="literal">NULL</span>)</span><br><span class="line">					web_free(buffer);</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 导出为命令形式 */</span></span><br><span class="line">MSH_CMD_EXPORT(bd, webclient post file);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************************************</span></span><br><span class="line"><span class="comment">函数名称 ： bd_data_parse</span></span><br><span class="line"><span class="comment">功    能 ： 解析json数据，并作出响应动作</span></span><br><span class="line"><span class="comment">参    数 ： data ------ 百度语音服务返回的数据（json格式）</span></span><br><span class="line"><span class="comment">返 回 值 ： void</span></span><br><span class="line"><span class="comment">作    者 ： RT-Thread；霹雳大乌龙</span></span><br><span class="line"><span class="comment">*************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bd_data_parse</span><span class="params">(<span class="keyword">uint8_t</span> *data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cJSON *root = RT_NULL, *object = RT_NULL, *item =RT_NULL;</span><br><span class="line"></span><br><span class="line">    root = cJSON_Parse((<span class="keyword">const</span> <span class="keyword">char</span> *)data);</span><br><span class="line">    <span class="keyword">if</span> (!root)</span><br><span class="line">    &#123;</span><br><span class="line">        rt_kprintf(<span class="string">"No memory for cJSON root!\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">    object = cJSON_GetObjectItem(root, <span class="string">"result"</span>);</span><br><span class="line"></span><br><span class="line">		item = object-&gt;child;</span><br><span class="line"></span><br><span class="line">    rt_kprintf(<span class="string">"\nresult	:%s \r\n"</span>, item-&gt;valuestring);</span><br><span class="line">		</span><br><span class="line">		rt_pin_mode(PIN_LED_R, PIN_MODE_OUTPUT);</span><br><span class="line">		rt_pin_mode(PIN_LED_G, PIN_MODE_OUTPUT);</span><br><span class="line">		rt_pin_mode(PIN_LED_B, PIN_MODE_OUTPUT);</span><br><span class="line">		rt_pin_write(PIN_LED_R,<span class="number">1</span>);</span><br><span class="line">		rt_pin_write(PIN_LED_G,<span class="number">1</span>);</span><br><span class="line">		rt_pin_write(PIN_LED_B,<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">strstr</span>((<span class="keyword">char</span>*)data, cmd1) != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">				<span class="comment">/* 打开红灯 */</span></span><br><span class="line">			rt_pin_write(PIN_LED_R,<span class="number">0</span>);</span><br><span class="line">		&#125;		</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">strstr</span>((<span class="keyword">char</span>*)data, cmd2) != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">				<span class="comment">/* 关闭红灯 */</span></span><br><span class="line">			rt_pin_write(PIN_LED_R,<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">strstr</span>((<span class="keyword">char</span>*)data, cmd3) != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">				<span class="comment">/* 打开蓝灯 */</span></span><br><span class="line">			rt_pin_write(PIN_LED_B,<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">strstr</span>((<span class="keyword">char</span>*)data, cmd4) != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">				<span class="comment">/* 关闭蓝灯 */</span></span><br><span class="line">			rt_pin_write(PIN_LED_B,<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">strstr</span>((<span class="keyword">char</span>*)data, cmd5) != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">				<span class="comment">/* 打开绿灯 */</span></span><br><span class="line">			rt_pin_write(PIN_LED_G,<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">strstr</span>((<span class="keyword">char</span>*)data, cmd6) != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">				<span class="comment">/* 关闭绿灯 */</span></span><br><span class="line">			rt_pin_write(PIN_LED_G,<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (root != RT_NULL)</span><br><span class="line">        cJSON_Delete(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需以上的代码，你就可以实现百度语音识别以及控制相应外设了。下面看看实际效果：<br><br>我使用的潘多拉开发板板载了stlink（且其为我们提供了一个虚拟串口），用usb数据线将开发板和电脑连接起来，将代码烧写进开发板后，我们利用这个虚拟串口，使用Xshell一类的终端软件，就可以看到如下的开机画面：<br><img src="https://ftp.bmp.ovh/imgs/2019/10/bdfc1e5c5e29b5d8.png" alt><br>这便是RT-Thread提供的Finsh控制台组件，使用这个组件，我们可以方便地观察程序的运行状态，以命令行的形式调试运行程序，从图中我们可以看到，我们需要的文件系统和网络功能都已经初始化成功。</p>
+<p>使用ls命令看看：<br><img src="https://ftp.bmp.ovh/imgs/2019/10/aa9765bde9fb096e.png" alt><br>欸~，这便是我事先准备好的音频文件。</p>
+<p>在上面的代码中，我们可以看到有这样一句：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MSH_CMD_EXPORT(bd, webclient post file);</span><br></pre></td></tr></table></figure></p>
+<p>通过这行代码，我们就可以在Finsh控制台里使用bd这个命令，这个命令就是将音频文件发送到百度语音服务器，试试看：<br><img src="https://ftp.bmp.ovh/imgs/2019/10/3b3f17044d530b3b.png" alt></p>
+<p>看，我使用bd命令将greenon.pcm发送到百度语音服务器，正确识别出结果：“打开绿灯”；于此同时，rgb灯也亮起了绿色</p>
+<p><img src="https://ftp.bmp.ovh/imgs/2019/10/3298f9616fd1a0f9.jpg" alt></p>
+<p>尝试其他音频文件，效果完美！！！</p>
+<p>好了，本次分享也就到这了，觉得不错的帮忙转发点个在看哦~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/STM32/" rel="tag"># STM32</a>
+          
+            <a href="/tags/百度语音/" rel="tag"># 百度语音</a>
+          
+            <a href="/tags/RT-Thread/" rel="tag"># RT-Thread</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/02/RT-Thread学习笔记 —— 信号量/" rel="next" title="RT-Thread学习笔记 —— 信号量">
+                <i class="fa fa-chevron-left"></i> RT-Thread学习笔记 —— 信号量
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（三）/" rel="prev" title="手把手教你实现基于RT-Thread的百度语音识别（三）">
+                手把手教你实现基于RT-Thread的百度语音识别（三） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="http://ww1.sinaimg.cn/large/93ef9e7bly1g3vcnt99q9j20hs0dcwh6.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动手实践"><span class="nav-number">2.</span> <span class="nav-text">动手实践</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

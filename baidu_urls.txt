@@ -1,3 +1,7 @@
+https://lxzzzzzxl.github.io/2019/10/10/C语言-返回数组/
+https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/
+https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（三）/
+https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（二）/
 https://lxzzzzzxl.github.io/2019/05/02/RT-Thread学习笔记 —— 信号量/
 https://lxzzzzzxl.github.io/2019/04/28/RT-Thread学习笔记 —— UART串口/
 https://lxzzzzzxl.github.io/2019/04/28/RT-Thread学习笔记  —— 线程管理/
@@ -20,7 +24,3 @@ https://lxzzzzzxl.github.io/2019/01/22/Quartus II 13.1破解 注册/
 https://lxzzzzzxl.github.io/2019/01/20/W600+STM32 AT指令(W600TCP服务器——用手机TCP调试助手发信息给单片机控制LED亮灭)/
 https://lxzzzzzxl.github.io/2019/01/13/W600(TW-01模组) AT开发初探(四.创建AP作为服务器开启多链接通讯)/
 https://lxzzzzzxl.github.io/2019/01/11/W600(TW-01模组) AT开发初探(三.创建STA与服务器进行透传TCP通讯)/
-https://lxzzzzzxl.github.io/2019/01/10/W600(TW-01模组) AT开发初探(二.创建STA与服务器进行TCP通讯)/
-https://lxzzzzzxl.github.io/2019/01/10/W600(TW-01模组) AT开发初探(一.固件下载)/
-https://lxzzzzzxl.github.io/2019/01/07/Altium Designer 18 元件封装/
-https://lxzzzzzxl.github.io/2018/12/31/Markdown学习（一）基本语法/

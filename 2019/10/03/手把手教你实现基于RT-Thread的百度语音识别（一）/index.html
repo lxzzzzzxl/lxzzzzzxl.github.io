@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="bOL9dtPV7ji0AoYd3qTECoHp2l7U-VmDfwRvkXzUrSo">
+
+
+
+  <meta name="msvalidate.01" content="4E07BAB83CC5EE0FC659A0A52C9295DE">
+
+
+
+
+
+  <meta name="baidu-site-verification" content="kolAMppGNe">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="手把手教你实现基于RT-Thread的百度语音识别（一）RT-Thread简介RT-Thread是一个集实时操作系统（RTOS）内核、中间件组件和开发者社区于一体的技术平台，由熊谱翔先生带领并集合开源社区力量开发而成，RT-Thread也是一个组件完整丰富、高度可伸缩、简易开发、超低功耗、高安全性的物联网操作系统。RT-Thread具备一个IoT OS平台所需的所有关键组件，例如GUI、网络协议栈">
+<meta name="keywords" content="STM32,百度语音,RT-Thread">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手把手教你实现基于RT-Thread的百度语音识别（一）">
+<meta property="og:url" content="https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/index.html">
+<meta property="og:site_name" content="霹雳大乌龙的学习笔记">
+<meta property="og:description" content="手把手教你实现基于RT-Thread的百度语音识别（一）RT-Thread简介RT-Thread是一个集实时操作系统（RTOS）内核、中间件组件和开发者社区于一体的技术平台，由熊谱翔先生带领并集合开源社区力量开发而成，RT-Thread也是一个组件完整丰富、高度可伸缩、简易开发、超低功耗、高安全性的物联网操作系统。RT-Thread具备一个IoT OS平台所需的所有关键组件，例如GUI、网络协议栈">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/105cd8bd45d5fe3b.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/702a5db744a2bb28.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/35856dd41c1c0f9d.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/2394d316f2a8cc06.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/259c4852d08d9d74.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/9002b4cb9f67c6f0.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/49e0b9bf2a4dcdd2.png">
+<meta property="og:updated_time" content="2019-10-11T06:10:26.497Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="手把手教你实现基于RT-Thread的百度语音识别（一）">
+<meta name="twitter:description" content="手把手教你实现基于RT-Thread的百度语音识别（一）RT-Thread简介RT-Thread是一个集实时操作系统（RTOS）内核、中间件组件和开发者社区于一体的技术平台，由熊谱翔先生带领并集合开源社区力量开发而成，RT-Thread也是一个组件完整丰富、高度可伸缩、简易开发、超低功耗、高安全性的物联网操作系统。RT-Thread具备一个IoT OS平台所需的所有关键组件，例如GUI、网络协议栈">
+<meta name="twitter:image" content="https://ftp.bmp.ovh/imgs/2019/10/105cd8bd45d5fe3b.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="霹雳大乌龙的学习笔记" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>手把手教你实现基于RT-Thread的百度语音识别（一） | 霹雳大乌龙的学习笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霹雳大乌龙的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lxzzzzzxl.github.io/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霹雳大乌龙">
+      <meta itemprop="description" content="做自己喜欢做的事情，努力成为大牛！">
+      <meta itemprop="image" content="http://ww1.sinaimg.cn/large/93ef9e7bly1g3vcnt99q9j20hs0dcwh6.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霹雳大乌龙的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">手把手教你实现基于RT-Thread的百度语音识别（一）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-03 18:12:19" itemprop="dateCreated datePublished" datetime="2019-10-03T18:12:19+08:00">2019-10-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-11 14:10:26" itemprop="dateModified" datetime="2019-10-11T14:10:26+08:00">2019-10-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/语音识别/" itemprop="url" rel="index"><span itemprop="name">语音识别</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（一）/" class="leancloud_visitors" data-flag-title="手把手教你实现基于RT-Thread的百度语音识别（一）">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="手把手教你实现基于RT-Thread的百度语音识别（一）"><a href="#手把手教你实现基于RT-Thread的百度语音识别（一）" class="headerlink" title="手把手教你实现基于RT-Thread的百度语音识别（一）"></a>手把手教你实现基于RT-Thread的百度语音识别（一）</h1><h2 id="RT-Thread简介"><a href="#RT-Thread简介" class="headerlink" title="RT-Thread简介"></a>RT-Thread简介</h2><p>RT-Thread是一个集实时操作系统（RTOS）内核、中间件组件和开发者社区于一体的技术平台，由熊谱翔先生带领并集合开源社区力量开发而成，RT-Thread也是一个组件完整丰富、高度可伸缩、简易开发、超低功耗、高安全性的物联网操作系统。RT-Thread具备一个IoT OS平台所需的所有关键组件，例如GUI、网络协议栈、安全传输、低功耗组件等等。经过11年的累积发展，RT-Thread已经拥有一个国内最大的嵌入式开源社区，同时被广泛应用于能源、车载、医疗、消费电子等多个行业，累积装机量超过2亿台，成为国人自主开发、国内最成熟稳定和装机量最大的开源RTOS。</p>
+<p>RT-Thread拥有良好的软件生态，支持市面上所有主流的编译工具如GCC、Keil、IAR等，工具链完善、友好，支持各类标准接口，如POSIX、CMSIS、C++应用环境、Javascript执行环境等，方便开发者移植各类应用程序。商用支持所有主流MCU架构，如ARM Cortex-M/R/A, MIPS, X86, Xtensa, C-Sky, RISC-V，几乎支持市场上所有主流的MCU和Wi-Fi芯片。</p>
+<p>得益于RT-thread丰富的组件以及一系列好用的软件包，作为应用开发者，我们不必过度关心底层的实现，而可以将更多的精力放在应用实现上，我将分享的百度语音识别便是如此。</p>
+<h2 id="百度AI简介"><a href="#百度AI简介" class="headerlink" title="百度AI简介"></a>百度AI简介</h2><p>语音识别服务是百度AI众多服务中的一项，应用该服务，你可以将语音识别为文字，适用于手机应用语音交互、语音内容分析、智能硬件、呼叫中心智能客服等多种场景。我分享的百度语音识别就是将该服务应用于STM32上的一个案例。</p>
+<h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><blockquote>
+<p>硬件：STM32 + 音频编解码芯片 + LCD + 常用外设（为了方便我直接使用正点原子的潘多拉开发板）<br><br>平台：RT-Thread + 百度AI</p>
+</blockquote>
+<p>1.使用RT-Thread的 ‘stm32l475-atk-pandora’ BSP（若你使用的硬件跟我不一样，可以使用RT-Thread对应的BSP，或根据官方教程自行制作）；<br><br>2.挂载elm FatFS文件系统，用于存放待识别音频；<br><br>3.初始化板载WIFI模块 AP6181 或 使用AT组件+ESP8266，使开发板具备网络功能；<br><br>4.使用Audio组件，实现录音功能，并将音频存入文件系统；<br><br>5.使用webclient软件包，将文件系统中的音频上传到百度AI服务端，识别后返回Json数据；<br><br>6.使用CJson软件包解析数据，根据解析出的数据作出响应动作（控制RGB灯）；<br><br>7.将中文字库烧写进外挂的spi flash，使用SUFD+FAL软件包读写flash，实现LCD的中文显示。<br></p>
+<p>因为项目的重点以及难点在于百度语音识别，所以接下来的系列文章，我将着重讲解上述的4-7点，而其他部分大家自行前往RT-Thread的文档中心学习。</p>
+<h2 id="百度语音识别服务使用流程"><a href="#百度语音识别服务使用流程" class="headerlink" title="百度语音识别服务使用流程"></a>百度语音识别服务使用流程</h2><p>在项目开始之前，我觉得有必要带大家走一遍百度语音服务的调用流程，不然直接写代码，肯定懵逼一大片。其实这部分我之前在我的个人博客也有简单写过，顺手打波广告（lxzzzzzxl.github.io）我的个人博客，不过太久没去看发现很多图挂了，应该是之前使用的图床有问题。废话不多说：</p>
+<p>百度语音识别简单来说就是百度AI通过API的方式给开发者提供一个通用的HTTP接口，开发者通过这个接口上传音频文件，返回识别结果；</p>
+<h2 id="首先我们要注册一个百度开发者账号，然后创建一个语音识别的应用："><a href="#首先我们要注册一个百度开发者账号，然后创建一个语音识别的应用：" class="headerlink" title="首先我们要注册一个百度开发者账号，然后创建一个语音识别的应用："></a>首先我们要注册一个百度开发者账号，然后创建一个语音识别的应用：</h2><p>1.搜索“百度AI”，进入如下页面，点击右上方控制台（未注册的需注册）：<br><img src="https://ftp.bmp.ovh/imgs/2019/10/105cd8bd45d5fe3b.png" alt></p>
+<p>2.点击“语音技术”，进入如下页面，点击“创建应用”：<br><img src="https://ftp.bmp.ovh/imgs/2019/10/702a5db744a2bb28.png" alt></p>
+<p>3.填写相关信息后点击创建，创建成功后可以在应用列表看到你新创建的应用：<br><img src="https://ftp.bmp.ovh/imgs/2019/10/35856dd41c1c0f9d.png" alt></p>
+<h2 id="语音识别过程"><a href="#语音识别过程" class="headerlink" title="语音识别过程"></a>语音识别过程</h2><p>4.获取 Access Token：<br><br>（这里推荐一个软件：Postman，使用这个软件你可以在自己的PC上完整的体验整个百度语音识别过程）<br><br>向授权服务地址 <a href="https://aip.baidubce.com/oauth/2.0/token" target="_blank" rel="noopener">https://aip.baidubce.com/oauth/2.0/token</a> 发送请求（推荐使用POST），并在URL中带上以下参数：</p>
+<blockquote>
+<p>grant_type： 必须参数，固定为client_credentials；<br><br>client_id： 必须参数，应用的API Key；<br><br>client_secret： 必须参数，应用的Secret Key；<br></p>
+</blockquote>
+<p>使用浏览器，例：<br><br><a href="https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&amp;client_id=Va5yQRHl********LT0vuXV4&amp;client_secret=" target="_blank" rel="noopener">https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&amp;client_id=Va5yQRHl********LT0vuXV4&amp;client_secret=</a> 0rDSjzQ20XUj5i<strong><em>**</em></strong>PQSzr5pVw2&amp;</p>
+<p>下图为使用Postman:<br><img src="https://ftp.bmp.ovh/imgs/2019/10/2394d316f2a8cc06.png" alt></p>
+<p>5.使用Access Token进行语音识别（Content-Type必填 / body里放的是你自己的音频文件，需与Content-Type对应，可以下载官方样例）<br><img src="https://ftp.bmp.ovh/imgs/2019/10/259c4852d08d9d74.png" alt></p>
+<p><img src="https://ftp.bmp.ovh/imgs/2019/10/9002b4cb9f67c6f0.png" alt></p>
+<p><img src="https://ftp.bmp.ovh/imgs/2019/10/49e0b9bf2a4dcdd2.png" alt></p>
+<p>更多详细内容，大家参考百度AI文档中心的相关部分<a href="https://ai.baidu.com/docs#/ASR-API/77e2b22e" target="_blank" rel="noopener">https://ai.baidu.com/docs#/ASR-API/77e2b22e</a> ，相信各位看完文档再来看这部分会豁然开朗~</p>
+<p>本次的介绍就到这里了，说实在的写博客写推文比敲代码难多了，本人水平有限，表达或许有些难以明白，望多见谅~~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/STM32/" rel="tag"># STM32</a>
+          
+            <a href="/tags/百度语音/" rel="tag"># 百度语音</a>
+          
+            <a href="/tags/RT-Thread/" rel="tag"># RT-Thread</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/03/手把手教你实现基于RT-Thread的百度语音识别（三）/" rel="next" title="手把手教你实现基于RT-Thread的百度语音识别（三）">
+                <i class="fa fa-chevron-left"></i> 手把手教你实现基于RT-Thread的百度语音识别（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/10/C语言-返回数组/" rel="prev" title="C语言 - 函数返回一个数组">
+                C语言 - 函数返回一个数组 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="http://ww1.sinaimg.cn/large/93ef9e7bly1g3vcnt99q9j20hs0dcwh6.jpg" alt="霹雳大乌龙">
+            
+              <p class="site-author-name" itemprop="name">霹雳大乌龙</p>
+              <p class="site-description motion-element" itemprop="description">做自己喜欢做的事情，努力成为大牛！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lxzzzzzxl" title="GitHub &rarr; https://github.com/lxzzzzzxl" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:linxiaozhe333@gmail.com" title="E-Mail &rarr; mailto:linxiaozhe333@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#手把手教你实现基于RT-Thread的百度语音识别（一）"><span class="nav-number">1.</span> <span class="nav-text">手把手教你实现基于RT-Thread的百度语音识别（一）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RT-Thread简介"><span class="nav-number">1.1.</span> <span class="nav-text">RT-Thread简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百度AI简介"><span class="nav-number">1.2.</span> <span class="nav-text">百度AI简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目介绍"><span class="nav-number">1.3.</span> <span class="nav-text">项目介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百度语音识别服务使用流程"><span class="nav-number">1.4.</span> <span class="nav-text">百度语音识别服务使用流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#首先我们要注册一个百度开发者账号，然后创建一个语音识别的应用："><span class="nav-number">1.5.</span> <span class="nav-text">首先我们要注册一个百度开发者账号，然后创建一个语音识别的应用：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语音识别过程"><span class="nav-number">1.6.</span> <span class="nav-text">语音识别过程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霹雳大乌龙</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function (item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '31p9xn3aNQftvplJE7I23muh-gzGzoHsz',
+    appKey: 'UmBNpYMWvqUdJDE1rHidoRNy',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+</script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
