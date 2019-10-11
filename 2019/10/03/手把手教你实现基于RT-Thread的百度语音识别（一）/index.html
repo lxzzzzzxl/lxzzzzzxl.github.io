@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/259c4852d08d9d74.png">
 <meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/9002b4cb9f67c6f0.png">
 <meta property="og:image" content="https://ftp.bmp.ovh/imgs/2019/10/49e0b9bf2a4dcdd2.png">
-<meta property="og:updated_time" content="2019-10-11T06:10:26.497Z">
+<meta property="og:updated_time" content="2019-10-11T06:15:36.202Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="手把手教你实现基于RT-Thread的百度语音识别（一）">
 <meta name="twitter:description" content="手把手教你实现基于RT-Thread的百度语音识别（一）RT-Thread简介RT-Thread是一个集实时操作系统（RTOS）内核、中间件组件和开发者社区于一体的技术平台，由熊谱翔先生带领并集合开源社区力量开发而成，RT-Thread也是一个组件完整丰富、高度可伸缩、简易开发、超低功耗、高安全性的物联网操作系统。RT-Thread具备一个IoT OS平台所需的所有关键组件，例如GUI、网络协议栈">
@@ -433,7 +433,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-10-11 14:10:26" itemprop="dateModified" datetime="2019-10-11T14:10:26+08:00">2019-10-11</time>
+                <time title="修改时间：2019-10-11 14:15:36" itemprop="dateModified" datetime="2019-10-11T14:15:36+08:00">2019-10-11</time>
               
             
           </span>
@@ -515,6 +515,7 @@
         <h1 id="手把手教你实现基于RT-Thread的百度语音识别（一）"><a href="#手把手教你实现基于RT-Thread的百度语音识别（一）" class="headerlink" title="手把手教你实现基于RT-Thread的百度语音识别（一）"></a>手把手教你实现基于RT-Thread的百度语音识别（一）</h1><h2 id="RT-Thread简介"><a href="#RT-Thread简介" class="headerlink" title="RT-Thread简介"></a>RT-Thread简介</h2><p>RT-Thread是一个集实时操作系统（RTOS）内核、中间件组件和开发者社区于一体的技术平台，由熊谱翔先生带领并集合开源社区力量开发而成，RT-Thread也是一个组件完整丰富、高度可伸缩、简易开发、超低功耗、高安全性的物联网操作系统。RT-Thread具备一个IoT OS平台所需的所有关键组件，例如GUI、网络协议栈、安全传输、低功耗组件等等。经过11年的累积发展，RT-Thread已经拥有一个国内最大的嵌入式开源社区，同时被广泛应用于能源、车载、医疗、消费电子等多个行业，累积装机量超过2亿台，成为国人自主开发、国内最成熟稳定和装机量最大的开源RTOS。</p>
 <p>RT-Thread拥有良好的软件生态，支持市面上所有主流的编译工具如GCC、Keil、IAR等，工具链完善、友好，支持各类标准接口，如POSIX、CMSIS、C++应用环境、Javascript执行环境等，方便开发者移植各类应用程序。商用支持所有主流MCU架构，如ARM Cortex-M/R/A, MIPS, X86, Xtensa, C-Sky, RISC-V，几乎支持市场上所有主流的MCU和Wi-Fi芯片。</p>
 <p>得益于RT-thread丰富的组件以及一系列好用的软件包，作为应用开发者，我们不必过度关心底层的实现，而可以将更多的精力放在应用实现上，我将分享的百度语音识别便是如此。</p>
+<a id="more"></a>  
 <h2 id="百度AI简介"><a href="#百度AI简介" class="headerlink" title="百度AI简介"></a>百度AI简介</h2><p>语音识别服务是百度AI众多服务中的一项，应用该服务，你可以将语音识别为文字，适用于手机应用语音交互、语音内容分析、智能硬件、呼叫中心智能客服等多种场景。我分享的百度语音识别就是将该服务应用于STM32上的一个案例。</p>
 <h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><blockquote>
 <p>硬件：STM32 + 音频编解码芯片 + LCD + 常用外设（为了方便我直接使用正点原子的潘多拉开发板）<br><br>平台：RT-Thread + 百度AI</p>
